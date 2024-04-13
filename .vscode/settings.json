@@ -1,0 +1,48 @@
+{
+  "typescript.tsdk": "node_modules\\typescript\\lib",
+  "[typescript]": {
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+      "source.fixAll": "explicit"
+    }
+  },
+  "[typescriptreact]": {
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+      "source.fixAll": "explicit"
+    }
+  },
+  "cSpell.words": [
+    "Argenti",
+    "Arlan",
+    "Asta",
+    "Bailu",
+    "Bronya",
+    "Defence",
+    "Gepard",
+    "Guinaifen",
+    "Hanya",
+    "Heng",
+    "Herta",
+    "Himeko",
+    "Imbibitor",
+    "Jing",
+    "Jingliu",
+    "Luka",
+    "Lunae",
+    "Luocha",
+    "Misha",
+    "Numby",
+    "Pela",
+    "Qingque",
+    "Ruan",
+    "Sampo",
+    "Seele",
+    "Sushang",
+    "Tingyun",
+    "Xuan",
+    "Xueyi",
+    "Yanqing",
+    "Yukong"
+  ]
+}
