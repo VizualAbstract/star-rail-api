@@ -26,6 +26,7 @@
     "dev": "tsc && vite build --watch",
     "start": "vite --host --open",
     "clean": "rimraf dist",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "build": "tsc && vite build",
     "build:types": "dts-bundle-generator --config ./dts-bundle-generator.config.ts",
     "lint:scripts": "eslint ./src --ext .ts",

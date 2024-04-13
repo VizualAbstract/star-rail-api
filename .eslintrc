@@ -1,18 +1,19 @@
 {
   "root": true,
   "parser": "@typescript-eslint/parser",
-  "plugins": ["@typescript-eslint", "prettier"],
+  "plugins": ["@typescript-eslint"],
   "extends": [
     "eslint:recommended",
     "plugin:@typescript-eslint/eslint-recommended",
     "plugin:@typescript-eslint/recommended",
-    "prettier"
   ],
   "env": {
     "browser": true,
-    "node": true
+    "node": true,
   },
+  "ignorePatterns": ["dist", ".eslintrc", "dts-bundle-generator.config.ts"],
   "rules": {
-    "prettier/prettier": "error"
-  }
+    "semi": ["error", "always"],
+    "quotes": ["error", "single", { "avoidEscape": true }],
+  },
 }
