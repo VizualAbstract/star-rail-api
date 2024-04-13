@@ -11,6 +11,37 @@ export type ClientOptions = {
   resource?: Resources;
 };
 
+/**
+ * Base class for all clients.
+ * @template T - Type of the data to be fetched.
+ * @class BaseClient
+ * @abstract
+ * @example
+ * class MyClient extends BaseClient<MyData> {
+ *  constructor(options?: ClientOptions) {
+ *   super(options);
+ * }
+ * }
+ * const client = new MyClient();
+ * client.get().then(data => console.log(data));
+ * client.list().then(data => console.log(data));
+ * client.getByID('1').then(data => console.log(data));
+ * @see
+ *
+ * @param {ClientOptions} [options] - Options for the client.
+ * @param {string} [options.baseUrl] - Base URL for the client.
+ * @param {string} [options.assetUrl] - Asset URL for the client.
+ * @param {AxiosCacheInstance} [options.cache] - Axios cache instance.
+ * @param {Languages} [options.language] - Language for the client.
+ * @param {Resources} [options.resource] - Resource for the client.
+ * @returns {void}
+ *
+ * Retrieval methods
+ * @method get - Get all data.
+ * @method list - List all data.
+ * @method getByID - Get data by ID.
+ *
+ */
 abstract class BaseClient<T> {
   protected baseUrl: string;
   protected assetUrl: string;
