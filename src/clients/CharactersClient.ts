@@ -6,6 +6,37 @@ import { Resources } from '../enum';
 import { Character } from '../types';
 import utils from '../utils';
 
+/**
+ * Client for fetching characters from the StarRailResStaticAPI.
+ *
+ * @class CharactersClient
+ * @extends BaseClient
+ *
+ * @example
+ * const client = new CharactersClient();
+ * client.get().then(data => console.log(data));
+ * client.list().then(data => console.log(data));
+ * client.getByID('1001').then(data => console.log(data));
+ *
+ * @param {ClientOptions} [options] - Options for the client.
+ * @param {string} [options.baseUrl] - Base URL for the client.
+ * @param {string} [options.assetUrl] - Asset URL for the client.
+ * @param {AxiosCacheInstance} [options.cache] - Axios cache instance.
+ * @param {Languages} [options.language] - Language for the client.
+ * @param {Resources} [options.resource] - Resource for the client.
+ * @returns {void}
+ *
+ * Modifier methods
+ * @method withRanks - Include ranks in the response.
+ * @method withSkills - Include skills in the response.
+ * @method withSkillTrees - Include skill trees in the response.
+ * @method withImages - Include full image paths in the response.
+ *
+ * Retrieval methods
+ * @method getByID - Get a character by ID.
+ * @method getByName - Get a character by name.
+ * @method list - List all characters.
+ */
 export class CharactersClient extends BaseClient<Character> {
   private options: ClientOptions;
 
