@@ -1,226 +1,378 @@
-# Vite TypeScript NPM Package
+# Star Rail API
 
-Scaffold TypeScript npm packages using this template to bootstrap your next library.
+A Fluent-style API client created to work exclusively with [StarRailStaticAPI](https://github.com/vizualabstract/StarRailStaticAPI).
 
-> [!TIP]
-> Looking for a JavaScript version of this template?  Try: [Vite JavaScript NPM Package](https://github.com/jasonsturges/vite-npm-package)
+## Install
 
+**Yarn**
 
-## Getting Started
-
-Begin via any of the following:
-
-- Press the "*Use this template*" button
-
-- Use [GitHub CLI](https://cli.github.com/) to execute:
-
-    ```
-    gh repo create <name> --template="https://github.com/jasonsturges/vite-typescript-npm-package"
-    ```
-
-- Simply `git clone`, delete the existing .git folder, and initialize a fresh repo:
-
-    ```
-    git clone https://github.com/jasonsturges/vite-typescript-npm-package.git
-    cd vite-typescript-npm-package
-    rm -rf .git
-    git init
-    git add -A
-    git commit -m "Initial commit"
-    ````
-
-There is no package lock included so that you may chose either `npm` or `yarn`.
-
-Remember to use `npm search <term>` to avoid naming conflicts in the NPM Registery for your new package name.
-
-
-## Usage
-
-The following tasks are available:
-
-- `dev`: Run Vite in watch mode to detect changes - all modules are compiled to the `dist/` folder, as well as rollup of all types to a d.ts declaration file
-- `start`: Run Vite in host mode to work in a local development environment within this package - vite hosts the `index.html` with real time HMR updates
-- `build`: Run Vite to build a production release distributable
-- `build:types`: Run DTS Generator to build d.ts type declarations only
-
-Rollup all your exports to the top-level index.ts for inclusion into the build distributable.
-
-For example, if you have a `utils/` folder that contains an `arrayUtils.ts` file.
-
-/src/utils/arrayUtils.ts:
-```ts
-export const distinct = <T>(array: T[] = []) => [...new Set(array)];
+```
+yarn add star-rail-api
 ```
 
-Include that export in the top-level `index.ts` .
+**Node**
 
-/src/index.ts:
-```ts
-// Main library exports - these are packaged in your distributable
-export { distinct } from "./utils/arrayUtils"
+```
+npm install star-rail-api
 ```
 
+## Overview
 
-## Development
+Clients provide user with builder-like way to access static API data and images from [vizualabstract.github.io/StarRailStaticAPI](https://vizualabstract.github.io/StarRailStaticAPI).
 
-There are multiple strategies for development, either working directly from the library or from a linked project.
+Once instantiated, you can use chainable methods to build up a query before executing it to retrieve the data you need.
 
-### Local Development
+## Using Clients
 
-Vite features a host mode for development with real time HMR updates directly from the library via the `start` script.  This enables rapid development within the library instead of linking from other projects.
+The following examples will cover the different types of methods on the `CharactersClient` class. The `CharactersClient` provides users with a way to interface with [characters.json](https://vizualabstract.github.io/StarRailStaticAPI/db/en/characters.json).
 
-Using the `start` task, Vite hosts the `index.html` for a local development environment.  This file is not included in the production build.  Note that only exports specified from the `index.ts` are ultimately bundled into the library.
+Each client will contain one of two types of methods that will allow you to configure the query (modify) or fetch the data (retrieve).
 
-As an example, this template includes a React app, which could be replaced with a different framework such as Vue, Solid.js, Svelte, etc...
+Therefore, we'll categorize them as either **Modifiers** or **Retrievers**.
 
-For UI projects, you may want to consider adding tools such as [Storybook](https://storybook.js.org/) to isolate UI component development by running a `storybook` script from this package.
+### Retriever methods
 
+Retrievers are methods that provide you with a way to execute a fetch. They will respond with your request, but depending on the retriever, you may receive a dictionary, an object, a list, or an error.
 
-### Project Development
+While all clients will have a `get` and `list` retriever, some, such as the `CharactersClient`, will allow you to query data with specialized methods for ID or Name.
 
-To use this library with other app projects before submitting to a registry such as NPM, run the `dev` script and link packages.
+**get()**
 
-Using the `dev` task, Vite detects changes and compiles all modules to the `dist/` folder, as well as rollup of all types to a d.ts declaration file.  
+```javascript
+import { CharactersClient } from 'star-rail-api';
 
-To test your library from within an app:
+const client = new CharactersClient();
 
-- **From this library**: run `npm link` or `yarn link` command to register the package
-- **From your app**: run `npm link "mylib"` or `yarn link "mylib"` command to use the library inside your app during development
+characters.get().then((resp) => { console.log(resp) });
 
-Inside your app's `node_modules/` folder, a symlink is created to the library.
-
-
-## Development Cleanup
-
-Once development completes, `unlink` both your library and test app projects.
-
-- **From your app**: run `npm unlink "mylib"` or `yarn unlink "mylib"` command to remove the library symlink
-- **From your library**: run `npm unlink` or `yarn unlink` command to unregister the package
-
-If you mistakenly forget to `unlink`, you can manually clean up artifacts from `yarn` or `npm`.
-
-For `yarn`, the `link` command creates symlinks which can be deleted from your home directory:
-```
-~/.config/yarn/link
-```
-
-For `npm`, the `link` command creates global packages which can be removed by executing:
-```bash
-sudo npm rm --global "mylib"
-```
-
-Confirm your npm global packages with the command:
-```bash
-npm ls --global --depth 0
-```
-
-For your app, simply reinstall dependencies to clear any forgotten linked packages.  This will remove any symlinks in the `node_modules/` folder.
-
-
-## Release Publishing
-
-Update your `package.json` to the next version number and tag a release.
-
-Assure that your package lockfile is also updated by running an install.  For npm, this will assure the lockfile has the updated version number.  Yarn does not duplicate the version number in the lockfile.
-
-If you are publishing to a private registry such as GitHub packages, update your `package.json` to include `publishConfig` and `repository`:
-
-package.json:
-```json
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com/@MyOrg"
+// Response
+{
+  "1001": {
+    id: "1001",
+    name: "March 7th",
+    rarity: 4,
+    path: "Knight",
+    element: "Ice",
+    ranks: [
+      "100101",
+      "100102",
+    ],
+    icon: "icon/character/1001.png",
+    portrait: "image/character_portrait/1001.png"
   },
-```
-
-Unless you are using a continuous integration service such as GitHub Actions, assure that your `dist/` folder is cleanly build.  Note that `npm publish` will ship anything inside the distributable folder.
-
-For clean builds, you may want to install the `rimraf` package and add a `clean` or `prebuild` script to your `package.json` to remove any artifacts from your `dist/` folder.  Or, manually delete the `dist/` folder yourself.
-
-package.json:
-```json
-  "scripts": {
-    "clean": "rimraf dist"
+  "1002": {
+    id: "1002",
+    name: "Dan Heng",
+    rarity: 4,
+    path: "Rogue",
+    element: "Wind",
+    ranks: [
+      "100201",
+      "100202",
+    ],
+    icon: "icon/character/1002.png",
+    portrait: "image/character_portrait/1002.png"
   }
+}
 ```
 
-Before you submit for the first time, make sure your package name is available by using `npm search`.  If npm rejects your package name, update your `package.json` and resubmit.
+The `get()` method provides the most direct way of accessing data. It will always return a dictionary, with ID as keys.
 
-```bash
-npm search <term>
+The `list()` retriever will return the values as a list.
+
+**getByName()**
+
+As mentioned before, depending on the client in use, you may have access to additional, specialized retrievers.
+
+For `CharactersClient`, you'll be able to retrieve a specific character by name.
+
+```javascript
+import { CharactersClient } from 'star-rail-api';
+
+const client = new CharactersClient();
+
+characters.getByName('Himeko').then((resp) => { console.log(resp) });
+
+// Response
+{
+  id: "1003",
+  name: "Himeko",
+  rarity: 5,
+  path: "Mage",
+  element: "Fire",
+  ranks: [
+    "100301",
+    "100302",
+  ],
+  icon: "icon/character/1003.png",
+  portrait: "image/character_portrait/1003.png"
+}
 ```
 
-Once ready to submit your package to the NPM Registry, execute the following tasks via `npm` (or `yarn`):
+For people using the [Honkai: Star Rail - Data Scanner](https://github.com/kel-z/HSR-Scanner), the `key` property on the `characters` array can be safely used as the reference (English only).
 
-```bash
-npm run build
+
+#### Modifier methods
+
+Modifiers are chainable methods that provide users with a way of manipulating data.
+
+In the examples thus far, you can see two patterns emerge in the responses: ranks returns a list of stringified IDs.
+
+Many resources in the static API make references to each other, with little more than a list of IDs. For this example, ranks is listing IDs in reference to [character_ranks.json](https://vizualabstract.github.io/StarRailStaticAPI/db/en/character_ranks.json).
+
+While you can invoke the `CharacterRanksClient` class to retrieve that information, you can use modifiers on the `CharactersClient` to automatically retrieve and include that data.
+
+```javascript
+import { CharactersClient, CharactersByID } from 'star-rail-api';
+
+new CharactersClient()
+  .withRanks()
+  .getByName(CharactersByID.SilverWolf)
+  .then((resp) => {
+    console.log(resp);
+  });
+
+// Response
+{
+  id: "1003",
+  name: "Silver Wolf",
+  rarity: 5,
+  path: "Warlock",
+  element: "Quantum",
+  ranks: [
+    "100601",
+    "100602",
+  ],
+  icon: "icon/character/1003.png",
+  portrait: "image/character_portrait/1003.png"
+  _ranks: [
+    {
+      id: "100601",
+      name: "Social Engineering",
+      rank: 1,
+      desc: "After using her Ultimate to attack enemies, Silver Wolf regenerates 7 Energy for every debuff that the target enemy currently has. This effect can be triggered up to 5 time(s) in each use of her Ultimate.",
+      icon: "icon/skill/1006_rank1.png"
+    },
+    {
+      id: "100602",
+      name: "Zombie Network",
+      rank: 2,
+      desc: "When an enemy enters battle, reduces their Effect RES by 20%.",
+      materials: [
+        {
+          id: "11006",
+          num: 1
+        }
+      ],
+      icon: "icon/skill/1006_rank2.png"
+    }
+  ]
+}
 ```
 
-Assure the proper npm login:
+Keep in mind, most modifiers, like `withRanks`, `withSkills` and `withSkillTrees`, will append the additional data to the data object (note the difference between `ranks` and `_ranks`) instead of replace the original property.
 
-```bash
-npm login
+All modifiers can be chained, and each Client will have access to their own set of methods. One that many of them will have though, is the `withImages()` modifier.
+
+[StarRailStaticAPI](https://vizualabstract.github.io/StarRailStaticAPI/) also has access to images, and therefore, so do Star Rail API clients. Normally, images are returned with only a path name, `icon/skill/1006_rank2.png`.
+
+But applying the `withImages()` modifier, they'll return with a full image URL so you can embed images throughout your app.
+
+```javascript
+import { CharactersClient, CharactersByID } from 'star-rail-api';
+
+new CharactersClient()
+  .withRanks()
+  .withImages()
+  .getByName(CharactersByID.SilverWolf)
+  .then((resp) => {
+    console.log(resp);
+  });
+
+// Response
+{
+  id: "1003",
+  name: "Silver Wolf",
+  rarity: 5,
+  path: "Warlock",
+  element: "Quantum",
+  ranks: [
+    "100601",
+    "100602",
+  ],
+  icon: "https://vizualabstract.github.io/StarRailStaticAPI/assets/icon/character/1003.png",
+  portrait: "https://vizualabstract.github.io/StarRailStaticAPI/assets/image/character_portrait/1003.png"
+  _ranks: [
+    {
+      id: "100601",
+      name: "Social Engineering",
+      rank: 1,
+      desc: "After using her Ultimate to attack enemies, Silver Wolf regenerates 7 Energy for every debuff that the target enemy currently has. This effect can be triggered up to 5 time(s) in each use of her Ultimate.",
+      icon: "https://vizualabstract.github.io/StarRailStaticAPI/assets/icon/skill/1006_rank1.png"
+    },
+    {
+      id: "100602",
+      name: "Zombie Network",
+      rank: 2,
+      desc: "When an enemy enters battle, reduces their Effect RES by 20%.",
+      materials: [
+        {
+          id: "11006",
+          num: 1
+        }
+      ],
+      icon: "https://vizualabstract.github.io/StarRailStaticAPI/assets/icon/skill/1006_rank2.png"
+    }
+  ]
+}
 ```
 
-Submit your package to the registry:
+## Clients
 
-```bash
-npm publish --access public
+### CharactersClient
+
+The character client is used to fetch data from [characters.json](https://vizualabstract.github.io/StarRailStaticAPI/db/en/characters.json).
+
+```javascript
+import { CharactersClient } from 'star-rail-api';
 ```
 
-## Continuous Integration
+**Modifiers**
 
-For continuous integration with GitHub Actions, create a `.github/workflows/publish.yml`:
+- `withRanks` - Appends characters rank data from `characters_ranks.json` as `_ranks`
+- `withSkills` - Appends character skill data from `characters_skills.json` as `_skills`
+- `withSkillTrees` - Appends character skill tree data from `characters_skill_trees.json` as `_skill_trees`
+- `withImages` - Include full image and icon paths in the response.
 
-```yml
-name: Publish Package to npmjs
-on:
-  release:
-    types: [created]
+**Data Retrieval**
 
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          registry-url: 'https://registry.npmjs.org'
-      - run: npm ci
-      - run: npm run build
-      - run: npm publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+- `get` - Returns a dictionary of all characters with their string ID as a key.
+- `getByID` - Returns or fails with the provided character ID.
+- `getByName` - Returns or fails with the provided character name.
+- `list` - Returns a list of all characters.
+
+**Example**
+
+```javascript
+import { CharacterIDs, CharactersClient } from 'star-rail-api';
+
+const characters = new CharactersClient();
+
+characters
+  .withRanks()
+  .withSkills()
+  .withSkillTrees()
+  .withImages()
+  .getByID(CharacterIDs.DanHengImbibitorLunae)
+  .then((resp) => {
+    window.console.log(resp);
+  })
+  .catch((error) => {
+    window.console.error(error);
+  });
 ```
 
-This will deploy your build artifact when a release is tagged.
+## Languages
 
-Obtain an "Automation" CI/CD access token to bypass 2FA from [npm](https://www.npmjs.com/) by selecting your profile image in the upper right, and chosing "Access Tokens".
+The Query Client offers a variety of options, but the most important one may be the language setting. By default, the Query client will return english translations.
 
-To add secrets to your repository:
-- From your repository, select _Settings_
-- From the _Security_ section of the sidebar, expand _Secrets and variables_ and select _Actions_
-- From the _Secrets_ tab, press _New repository secret_ to add the `NPM_TOKEN` key
+To understand how languages work with the StarRailStaticAPI, see [the Language section](https://vizualabstract.github.io/StarRailStaticAPI/#language).
 
-To add secrets to your organization:
-- From your organization, select _Settings_
-- From the _Security_ section of the sidebar, expand _Secrets and variables_ and select _Actions_
-- From the _Secrets_ tab, press _New organization secret_ to add the `NPM_TOKEN` key
+To configure the client to use a different language translation, provide an options object to your client class:
 
-Assure either a `.npmrc` or `publishConfig` in your `package.json`:
+```javascript
+import { CharactersClient, CharactersByID, Languages } from 'star-rail-api';
 
-package.json:
-```json
-  "publishConfig": {
-    "access": "public",
-    "registry": "https://registry.npmjs.org/",
-    "scope": "username"
-  },
+new CharactersClient({
+    language: Languages.chinese // or use 'cn'
+  })
+  .withRanks()
+  .getByName(CharactersByID.SilverWolf)
+  .then((resp) => {
+    console.log(resp);
+  });
+
+// Response
+{
+  id: "1003",
+  name: "银狼",
+  rarity: 5,
+  path: "Warlock",
+  element: "Quantum",
+  ranks: [
+    "100601",
+    "100602",
+  ],
+  icon: "icon/character/1003.png",
+  portrait: "image/character_portrait/1003.png"
+  _ranks: [
+    {
+      id: "100601",
+      name: "社会工程",
+      rank: 1,
+      desc: "施放终结技攻击敌方目标后，目标每有1个负面效果，银狼恢复7点能量。该效果在每次终结技攻击中最多生效5次。"
+    },
+    {
+      id: "100602",
+      name: "僵尸网络",
+      rank: 2,
+      desc: "在敌方目标进入战斗时，使其效果抵抗降低20%。",
+      materials: [
+        {
+          id: "11006",
+          num: 1
+        }
+      ],
+      icon: "icon/skill/1006_rank2.png"
+    }
+  ]
+}
 ```
 
-For more information, see: 
-- [Using secrets in GitHub Actions](https://docs.github.com/en/actions/security-guides/using-secrets-in-github-actions)
-- [Publish to npmjs and GPR with npm](https://github.com/actions/setup-node/blob/main/docs/advanced-usage.md#publish-to-npmjs-and-gpr-with-npm)
+## Enum
+
+To make character retrieval easier, I've provided with two enumerated lists to aid in fetching characters by name or ID.
+
+Keep in mind, `getByName` uses the English translation - so if you're using a different language, you'll want to create your own method for translating the keys.
+
+**Characters enum**
+
+```javascript
+import { CharactersClient, Characters } from 'star-rail-api';
+
+// English with Characters enum
+const weltEn = new CharactersClient().getByName(Characters.Welt);
+
+// Chinese
+const weltCN = new CharactersClient().getByName('瓦尔特');
+```
+
+While this is something I may support in the future, for now, I recommend using `getByID` and `CharactersByID` if you intend on support other languages. They are language agnostic:
+
+**CharactersByID enum**
+
+```javascript
+import { CharactersClient, CharactersByID } from 'star-rail-api';
+
+const kafka = new CharactersClient().getByID(CharactersByID.Kafka);
+```
+
+**Languages enum**
+
+```javascript
+import { CharactersClient, Languages } from 'star-rail-api';
+
+const japaneseClient = new CharactersClient({ language: Languages.japanese });
+
+const portugueseClient = new CharactersClient({ language: 'pt' });
+```
+
+In addition to characters, I have an enumerated list for language translations, but you can always use the key found at [vizualabstract.github.io/StarRailStaticAPI#languag](https://vizualabstract.github.io/StarRailStaticAPI#languag).
+
+## Links
+
+- StarRailStaticAPI: [vizualabstract.github.io/StarRailStaticAPI](https://vizualabstract.github.io/StarRailStaticAPI)
+- My other project, Relic Harmonizer: [https://relicharmonizer.com](https://relicharmonizer.com)
+- StarRailRes: [Mar-7th/StarRailRes](https://github.com/Mar-7th/StarRailRes)
+- Game data source: [Dimbreath/StarRailData](https://github.com/Dimbreath/StarRailData)
+- HSR-Scanner [kel-z/HSR-Scanner](https://github.com/kel-z/HSR-Scanner)
