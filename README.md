@@ -1,42 +1,95 @@
-# Star Rail API
+### Star Rail API
 
-A Fluent-style API client created to work exclusively with [StarRailStaticAPI](https://github.com/vizualabstract/StarRailStaticAPI).
+This API client follows a builder-style approach and is specifically tailored for use with [StarRailStaticAPI](https://github.com/vizualabstract/StarRailStaticAPI).
 
-## Install
+## Clients
 
-**Yarn**
+### CharactersClient
 
-```
-yarn add star-rail-api
-```
+The character client is used to fetch data from [characters.json](https://vizualabstract.github.io/StarRailStaticAPI/db/en/characters.json).
 
-**Node**
-
-```
-npm install star-rail-api
+```javascript
+import { CharactersClient } from 'star-rail-api';
 ```
 
-## Overview
+## Client configuration
 
-Clients provide user with builder-like way to access static API data and images from [vizualabstract.github.io/StarRailStaticAPI](https://vizualabstract.github.io/StarRailStaticAPI).
+The client will accept an optional configuration object that you can use to overwrite default values.
 
-Once instantiated, you can use chainable methods to build up a query before executing it to retrieve the data you need.
+**Example**
+
+```
+const client = CharactersClient({
+  baseURL: '',
+  assetURL: '',
+  language: 'en',
+})
+```
+
+**Options**
+
+- baseURL - URL to the db directory for StarRailStaticAPI.
+- assetUrl - URL to the asset directory for StarRailStaticAPI.
+- language - Language to source the db files from StarRailStaticAPI. See [#language](#language) section.
+- cache - Axios Cache Interceptor settings. See [axios-cache-interceptor#config](https://axios-cache-interceptor.js.org/config)
+
+## Client methods
+
+**Modifiers**
+
+- `withRanks` - Appends characters rank data from `characters_ranks.json` as `_ranks`
+- `withSkills` - Appends character skill data from `characters_skills.json` as `_skills`
+- `withSkillTrees` - Appends character skill tree data from `characters_skill_trees.json` as `_skill_trees`
+- `withImages` - Include full image and icon paths in the response.
+
+**Retrievers**
+
+- `get` - Returns a dictionary of all characters with their string ID as a key.
+- `getByID` - Returns or fails with the provided character ID.
+- `getByName` - Returns or fails with the provided character name.
+- `list` - Returns a list of all characters.
+
+**Example**
+
+```javascript
+import { CharacterIDs, CharactersClient } from 'star-rail-api';
+
+const characters = new CharactersClient();
+
+characters
+  .withRanks()
+  .withSkills()
+  .withSkillTrees()
+  .withImages()
+  .getByID(CharacterIDs.DanHengImbibitorLunae)
+  .then((resp) => {
+    window.console.log(resp);
+  })
+  .catch((error) => {
+    window.console.error(error);
+  });
+```
+
 
 ## Using Clients
 
-The following examples will cover the different types of methods on the `CharactersClient` class. The `CharactersClient` provides users with a way to interface with [characters.json](https://vizualabstract.github.io/StarRailStaticAPI/db/en/characters.json).
+The ensuing illustrations will address the various kinds of functionalities available within the `CharactersClient` class. This client facilitates interaction with [characters.json](https://vizualabstract.github.io/StarRailStaticAPI/db/en/characters.json).
 
-Each client will contain one of two types of methods that will allow you to configure the query (modify) or fetch the data (retrieve).
+Every client will comprise either methods designed for adjusting the query (modifying) or for retrieving the data.
 
-Therefore, we'll categorize them as either **Modifiers** or **Retrievers**.
+Hence, we will classify them as either **Modifiers** or **Retrievers**.
 
 ### Retriever methods
 
-Retrievers are methods that provide you with a way to execute a fetch. They will respond with your request, but depending on the retriever, you may receive a dictionary, an object, a list, or an error.
+Retrievers are functions that offer a means to perform a retrieval operation. They will reply with the requested information, but the output format could vary based on the specific retriever used, such as a dictionary, an object, a list, or an error message.
 
-While all clients will have a `get` and `list` retriever, some, such as the `CharactersClient`, will allow you to query data with specialized methods for ID or Name.
+Although every client will support standard `get` and `list` retriever functionalities, certain clients like the `CharactersClient` may have additional specialized methods for accessing data by ID or Name.
 
 **get()**
+
+The `get()` method allows direct access to the raw JSON object by returning a dictionary with IDs as keys.
+
+**Example**
 
 ```javascript
 import { CharactersClient } from 'star-rail-api';
@@ -76,22 +129,57 @@ characters.get().then((resp) => { console.log(resp) });
 }
 ```
 
-The `get()` method provides the most direct way of accessing data. It will always return a dictionary, with ID as keys.
+**list()**
 
-The `list()` retriever will return the values as a list.
+On the other hand, the `list()` method will return the values as an array.
 
-**getByName()**
+**Example**
 
-As mentioned before, depending on the client in use, you may have access to additional, specialized retrievers.
+```
+[
+  {
+    id: "1001",
+    name: "March 7th",
+    rarity: 4,
+    path: "Knight",
+    element: "Ice",
+    ranks: [
+      "100101",
+      "100102",
+    ],
+    icon: "icon/character/1001.png",
+    portrait: "image/character_portrait/1001.png"
+  },
+  {
+    id: "1002",
+    name: "Dan Heng",
+    rarity: 4,
+    path: "Rogue",
+    element: "Wind",
+    ranks: [
+      "100201",
+      "100202",
+    ],
+    icon: "icon/character/1002.png",
+    portrait: "image/character_portrait/1002.png"
+  }
+]
+```
 
-For `CharactersClient`, you'll be able to retrieve a specific character by name.
+**getByName(string)**
+
+The `CharactersClient` has a special method you wont find on all clients. Using `getByName`, you can can fetch specific characters by their name property.
+
+**Example**
 
 ```javascript
 import { CharactersClient } from 'star-rail-api';
 
 const client = new CharactersClient();
 
-characters.getByName('Himeko').then((resp) => { console.log(resp) });
+characters
+  .getByName('Himeko')
+  .then((resp) => { console.log(resp) });
 
 // Response
 {
@@ -109,18 +197,17 @@ characters.getByName('Himeko').then((resp) => { console.log(resp) });
 }
 ```
 
-For people using the [Honkai: Star Rail - Data Scanner](https://github.com/kel-z/HSR-Scanner), the `key` property on the `characters` array can be safely used as the reference (English only).
-
-
-#### Modifier methods
+### Modifier methods
 
 Modifiers are chainable methods that provide users with a way of manipulating data.
 
-In the examples thus far, you can see two patterns emerge in the responses: ranks returns a list of stringified IDs.
+In the example above, you can see that ranks returns a list of IDs. These are references to entries in the [character_ranks.json](https://vizualabstract.github.io/StarRailStaticAPI/db/en/character_ranks.json) file.
 
-Many resources in the static API make references to each other, with little more than a list of IDs. For this example, ranks is listing IDs in reference to [character_ranks.json](https://vizualabstract.github.io/StarRailStaticAPI/db/en/character_ranks.json).
+While you can invoke the `CharacterRanksClient` class to retrieve that information, you can use modifiers on the `CharactersClient` to automatically retrieve and include that data when you invoke your exectuer method.
 
-While you can invoke the `CharacterRanksClient` class to retrieve that information, you can use modifiers on the `CharactersClient` to automatically retrieve and include that data.
+Keep in mind, most modifiers that retrieve additional property data will will append its responseto the data object, not replace the original property value:
+
+**withRanks**
 
 ```javascript
 import { CharactersClient, CharactersByID } from 'star-rail-api';
@@ -142,6 +229,14 @@ new CharactersClient()
   ranks: [
     "100601",
     "100602",
+  ],
+  skills: [
+    "10011",
+    "10012"
+  ],
+  skill_trees: [
+    "1222012",
+    "1222013",
   ],
   icon: "icon/character/1003.png",
   portrait: "image/character_portrait/1003.png"
@@ -170,13 +265,11 @@ new CharactersClient()
 }
 ```
 
-Keep in mind, most modifiers, like `withRanks`, `withSkills` and `withSkillTrees`, will append the additional data to the data object (note the difference between `ranks` and `_ranks`) instead of replace the original property.
+#### withImages()
 
-All modifiers can be chained, and each Client will have access to their own set of methods. One that many of them will have though, is the `withImages()` modifier.
+One exception to the modifiers mentioned above is the `withImages()` method, which instead of appending images to the object, will actually inject a full URL path to the value.
 
-[StarRailStaticAPI](https://vizualabstract.github.io/StarRailStaticAPI/) also has access to images, and therefore, so do Star Rail API clients. Normally, images are returned with only a path name, `icon/skill/1006_rank2.png`.
-
-But applying the `withImages()` modifier, they'll return with a full image URL so you can embed images throughout your app.
+[StarRailStaticAPI](https://vizualabstract.github.io/StarRailStaticAPI/) also has access to images, and therefore, so do Star Rail API clients. Others, the default behavior is to return images with only the file path.
 
 ```javascript
 import { CharactersClient, CharactersByID } from 'star-rail-api';
@@ -225,51 +318,6 @@ new CharactersClient()
     }
   ]
 }
-```
-
-## Clients
-
-### CharactersClient
-
-The character client is used to fetch data from [characters.json](https://vizualabstract.github.io/StarRailStaticAPI/db/en/characters.json).
-
-```javascript
-import { CharactersClient } from 'star-rail-api';
-```
-
-**Modifiers**
-
-- `withRanks` - Appends characters rank data from `characters_ranks.json` as `_ranks`
-- `withSkills` - Appends character skill data from `characters_skills.json` as `_skills`
-- `withSkillTrees` - Appends character skill tree data from `characters_skill_trees.json` as `_skill_trees`
-- `withImages` - Include full image and icon paths in the response.
-
-**Data Retrieval**
-
-- `get` - Returns a dictionary of all characters with their string ID as a key.
-- `getByID` - Returns or fails with the provided character ID.
-- `getByName` - Returns or fails with the provided character name.
-- `list` - Returns a list of all characters.
-
-**Example**
-
-```javascript
-import { CharacterIDs, CharactersClient } from 'star-rail-api';
-
-const characters = new CharactersClient();
-
-characters
-  .withRanks()
-  .withSkills()
-  .withSkillTrees()
-  .withImages()
-  .getByID(CharacterIDs.DanHengImbibitorLunae)
-  .then((resp) => {
-    window.console.log(resp);
-  })
-  .catch((error) => {
-    window.console.error(error);
-  });
 ```
 
 ## Languages
@@ -329,7 +377,7 @@ new CharactersClient({
 }
 ```
 
-## Enum
+## CharactersByID, Characters
 
 To make character retrieval easier, I've provided with two enumerated lists to aid in fetching characters by name or ID.
 
