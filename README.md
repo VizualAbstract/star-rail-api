@@ -417,6 +417,23 @@ const portugueseClient = new CharactersClient({ language: 'pt' });
 
 In addition to characters, I have an enumerated list for language translations, but you can always use the key found at [vizualabstract.github.io/StarRailStaticAPI#languag](https://vizualabstract.github.io/StarRailStaticAPI#languag).
 
+## Local development
+
+1. From the library folder, run `yarn link` to register package locally
+2. From the project folder using library, run `yarn link 'star-rail-api`
+
+When development is completes, perform the same actions with `unlink`:
+
+1. From the library folder, run `yarn unlink` to register package locally
+2. From the project folder using library, run `yarn unlink 'star-rail-api`
+
+## Publishing a release
+
+1. Create a new branch for all your changes
+2. Update package.json with new version number
+3. Submit a pull request to merge to main
+4. Publish a new release with the new version number as a tag
+
 ## Links
 
 - StarRailStaticAPI: [vizualabstract.github.io/StarRailStaticAPI](https://vizualabstract.github.io/StarRailStaticAPI)
