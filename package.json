@@ -1,6 +1,6 @@
 {
   "name": "star-rail-api",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A Fluent-style API Client created to work exclusively with StarRailStaticAPI",
   "author": "Corey M. Capetillo <corey.capetillo@gmail.com> (https://coreycapetillo.com)",
   "homepage": "https://github.com/VizualAbstract/star-rail-api",
@@ -22,6 +22,10 @@
   "files": [
     "dist"
   ],
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
   "scripts": {
     "dev": "tsc && vite build --watch",
     "start": "vite --host --open",
