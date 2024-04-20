@@ -1,12 +1,12 @@
-import QueryBuilder, { ClientOptions } from '@/QueryBuilder';
+import QueryBuilder, { Config } from '@/QueryBuilder';
 import { Resources } from '@/enum';
 import { Achievement } from '@/types';
 
 export class AchievementsClient extends QueryBuilder<Achievement> {
-  constructor(options?: ClientOptions) {
-    super({ ...options, resource: Resources.achievements });
+  constructor(config?: Config) {
+    super({ ...config, resource: Resources.achievements });
 
-    this.options = { ...options, resource: Resources.achievements };
+    this.config = { ...config, resource: Resources.achievements };
   }
 
   async getByTitle(title: string): Promise<Achievement | undefined> {

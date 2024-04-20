@@ -1,14 +1,14 @@
-import QueryBuilder, { ClientOptions } from '@/QueryBuilder';
+import QueryBuilder, { Config } from '@/QueryBuilder';
 import { Resources } from '@/enum';
 import { Avatar } from '@/types';
 
 export class AvatarsClient extends QueryBuilder<Avatar> {
   private includeImagePaths: boolean = false;
 
-  constructor(options?: ClientOptions) {
-    super({ ...options, resource: Resources.avatars });
+  constructor(config?: Config) {
+    super({ ...config, resource: Resources.avatars });
 
-    this.options = { ...options, resource: Resources.avatars };
+    this.config = { ...config, resource: Resources.avatars };
   }
 
   withImages(): AvatarsClient {

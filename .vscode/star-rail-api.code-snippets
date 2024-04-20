@@ -3,7 +3,7 @@
     "scope": "typescript",
     "prefix": "starRailClient",
     "body": [
-      "import QueryBuilder, { ClientOptions } from '@/QueryBuilder';",
+      "import QueryBuilder, { Config } from '@/QueryBuilder';",
       "import { Resources } from '@/enum';",
       "import { ${1:RESOURCE_TYPE} } from '@/types';",
       "",
@@ -19,7 +19,7 @@
       "",
       "  private includeImagePaths: boolean = false;",
       "",
-      "  constructor(options?: ClientOptions) {",
+      "  constructor(options?: Config) {",
       "    // Adjust the resource enum as needed",
       "    super({ ...options, resource: Resources.${2:RESOURCE_ENUM} });",
       "",

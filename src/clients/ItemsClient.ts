@@ -1,14 +1,14 @@
-import QueryBuilder, { ClientOptions } from '@/QueryBuilder';
+import QueryBuilder, { Config } from '@/QueryBuilder';
 import { Resources } from '@/enum';
 import { Item } from '@/types';
 
 export class ItemsClient extends QueryBuilder<Item> {
   private includeImagePaths: boolean = false;
 
-  constructor(options?: ClientOptions) {
-    super({ ...options, resource: Resources.items });
+  constructor(config?: Config) {
+    super({ ...config, resource: Resources.items });
 
-    this.options = { ...options, resource: Resources.items };
+    this.config = { ...config, resource: Resources.items };
   }
 
   withImages(): ItemsClient {

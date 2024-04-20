@@ -19,8 +19,8 @@ export type Config = {
  * @abstract
  * @example
  * class MyClient extends QueryBuilder<MyData> {
- *  constructor(options?: ClientOptions) {
- *   super(options);
+ *  constructor(config?: Config) {
+ *   super(config);
  * }
  * }
  * const client = new MyClient();
@@ -29,12 +29,12 @@ export type Config = {
  * client.getByID('1').then(data => console.log(data));
  * @see
  *
- * @param {ClientOptions} [options] - Options for the client.
- * @param {string} [options.baseUrl] - Base URL for the client.
- * @param {string} [options.assetUrl] - Asset URL for the client.
- * @param {AxiosCacheInstance} [options.cache] - Axios cache instance.
- * @param {Languages} [options.language] - Language for the client.
- * @param {Resources} [options.resource] - Resource for the client.
+ * @param {Config} [config] - Options for the client.
+ * @param {string} [config.baseUrl] - Base URL for the client.
+ * @param {string} [config.assetUrl] - Asset URL for the client.
+ * @param {AxiosCacheInstance} [config.cache] - Axios cache instance.
+ * @param {Languages} [config.language] - Language for the client.
+ * @param {Resources} [config.resource] - Resource for the client.
  * @returns {void}
  *
  * Retrieval methods
@@ -44,7 +44,7 @@ export type Config = {
  *
  */
 abstract class QueryBuilder<T> {
-  protected options: Config;
+  protected config: Config;
   protected baseUrl: string;
   protected assetUrl: string;
   protected resource?: Resources;
@@ -58,7 +58,7 @@ abstract class QueryBuilder<T> {
     this.assetUrl = assetUrl || ASSET_URL;
     this.language = language || Languages.english;
     this.resource = resource;
-    this.options = config || {};
+    this.config = config || {};
 
     const axiosClient = Axios.create({
       baseURL: this.baseUrl,
@@ -100,7 +100,7 @@ abstract class QueryBuilder<T> {
   }
 
   async injectImagePaths(obj: T): Promise<T> {
-    utils.updateImagePaths(obj, this.options?.assetUrl);
+    utils.updateImagePaths(obj, this.config?.assetUrl);
     return obj;
   }
 }

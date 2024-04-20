@@ -1,4 +1,4 @@
-import QueryBuilder, { ClientOptions } from '@/QueryBuilder';
+import QueryBuilder, { Config } from '@/QueryBuilder';
 import { CharacterRanksClient } from '@clients/CharacterRanksClient';
 import { CharacterSkillTreesClient } from '@clients/CharacterSkillTreesClient';
 import { CharacterSkillsClient } from '@clients/CharacterSkillsClient';
@@ -18,12 +18,12 @@ import { CharacterPromotionsClient } from '@clients/CharacterPromotionsClient';
  * client.list().then(data => console.log(data));
  * client.getByID('1001').then(data => console.log(data));
  *
- * @param {ClientOptions} [options] - Options for the client.
- * @param {string} [options.baseUrl] - Base URL for the client.
- * @param {string} [options.assetUrl] - Asset URL for the client.
- * @param {AxiosCacheInstance} [options.cache] - Axios cache instance.
- * @param {Languages} [options.language] - Language for the client.
- * @param {Resources} [options.resource] - Resource for the client.
+ * @param {Config} [config] - Options for the client.
+ * @param {string} [config.baseUrl] - Base URL for the client.
+ * @param {string} [config.assetUrl] - Asset URL for the client.
+ * @param {AxiosCacheInstance} [config.cache] - Axios cache instance.
+ * @param {Languages} [config.language] - Language for the client.
+ * @param {Resources} [config.resource] - Resource for the client.
  * @returns {void}
  *
  * Modifier methods
@@ -52,10 +52,10 @@ export class CharactersClient extends QueryBuilder<Character> {
   private fetchMaterials: boolean = false;
   private includeImagePaths: boolean = false;
 
-  constructor(options?: ClientOptions) {
-    super({ ...options, resource: Resources.characters });
+  constructor(config?: Config) {
+    super({ ...config, resource: Resources.characters });
 
-    this.options = { ...options, resource: Resources.characters };
+    this.config = { ...config, resource: Resources.characters };
   }
 
   withRanks(): CharactersClient {
@@ -188,7 +188,7 @@ export class CharactersClient extends QueryBuilder<Character> {
 
   private getRanksClient(): CharacterRanksClient {
     if (!this.ranksClient) {
-      this.ranksClient = new CharacterRanksClient(this.options);
+      this.ranksClient = new CharacterRanksClient(this.config);
     }
 
     return this.ranksClient;
@@ -196,7 +196,7 @@ export class CharactersClient extends QueryBuilder<Character> {
 
   private getSkillsClient(): CharacterSkillsClient {
     if (!this.skillsClient) {
-      this.skillsClient = new CharacterSkillsClient(this.options);
+      this.skillsClient = new CharacterSkillsClient(this.config);
     }
 
     return this.skillsClient;
@@ -204,7 +204,7 @@ export class CharactersClient extends QueryBuilder<Character> {
 
   private getSkillTreesClient(): CharacterSkillTreesClient {
     if (!this.skillTreesClient) {
-      this.skillTreesClient = new CharacterSkillTreesClient(this.options);
+      this.skillTreesClient = new CharacterSkillTreesClient(this.config);
     }
 
     return this.skillTreesClient;
@@ -212,7 +212,7 @@ export class CharactersClient extends QueryBuilder<Character> {
 
   private getCharacterPromotionsClient(): CharacterPromotionsClient {
     if (!this.characterPromotionsClient) {
-      this.characterPromotionsClient = new CharacterPromotionsClient(this.options);
+      this.characterPromotionsClient = new CharacterPromotionsClient(this.config);
     }
 
     return this.characterPromotionsClient;

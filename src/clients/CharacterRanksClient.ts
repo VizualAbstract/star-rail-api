@@ -1,10 +1,10 @@
-import QueryBuilder, { ClientOptions } from '@/QueryBuilder';
+import QueryBuilder, { Config } from '@/QueryBuilder';
 import { Resources } from '@/enum';
 import { CharacterRank } from '@/types';
 
 export class CharacterRanksClient extends QueryBuilder<CharacterRank> {
-  constructor(options?: ClientOptions) {
-    super({ ...options, resource: Resources.characterRanks });
+  constructor(config?: Config) {
+    super({ ...config, resource: Resources.characterRanks });
   }
 
   async getByID(id: string | number): Promise<CharacterRank> {

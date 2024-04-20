@@ -1,4 +1,4 @@
-import QueryBuilder, { ClientOptions } from '@/QueryBuilder';
+import QueryBuilder, { Config } from '@/QueryBuilder';
 import { Characters, Resources } from '@/enum';
 import { CharacterToIDs } from '@/utils';
 import { CharacterPromotion } from '@/types';
@@ -9,10 +9,10 @@ export class CharacterPromotionsClient extends QueryBuilder<CharacterPromotion> 
 
   private fetchMaterials = false;
 
-  constructor(options?: ClientOptions) {
-    super({ ...options, resource: Resources.characterPromotions });
+  constructor(config?: Config) {
+    super({ ...config, resource: Resources.characterPromotions });
 
-    this.options = { ...options, resource: Resources.characterPromotions };
+    this.config = { ...config, resource: Resources.characterPromotions };
   }
 
   withMaterials(): CharacterPromotionsClient {
@@ -46,7 +46,7 @@ export class CharacterPromotionsClient extends QueryBuilder<CharacterPromotion> 
 
   private getItemsClient(): ItemsClient {
     if (!this.itemsClient) {
-      this.itemsClient = new ItemsClient(this.options);
+      this.itemsClient = new ItemsClient(this.config);
     }
 
     return this.itemsClient;

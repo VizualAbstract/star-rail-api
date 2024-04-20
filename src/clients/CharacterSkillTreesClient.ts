@@ -1,10 +1,10 @@
-import QueryBuilder, { ClientOptions } from '@/QueryBuilder';
+import QueryBuilder, { Config } from '@/QueryBuilder';
 import { Resources } from '@/enum';
 import { CharacterSkillTree } from '@/types';
 
 export class CharacterSkillTreesClient extends QueryBuilder<CharacterSkillTree> {
-  constructor(options?: ClientOptions) {
-    super({ ...options, resource: Resources.characterSkillTrees });
+  constructor(config?: Config) {
+    super({ ...config, resource: Resources.characterSkillTrees });
   }
 
   async getByID(id: string | number): Promise<CharacterSkillTree> {
