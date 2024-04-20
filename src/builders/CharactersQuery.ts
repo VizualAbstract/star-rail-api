@@ -1,10 +1,10 @@
 import QueryBuilder, { Config } from '@/QueryBuilder';
-import { CharacterRanksQuery } from '@clients/CharacterRanksQuery';
-import { CharacterSkillTreesQuery } from '@clients/CharacterSkillTreesQuery';
-import { CharacterSkillsQuery } from '@clients/CharacterSkillsQuery';
+import { CharacterRanksQuery } from '@/builders/CharacterRanksQuery';
+import { CharacterSkillTreesQuery } from '@/builders/CharacterSkillTreesQuery';
+import { CharacterSkillsQuery } from '@/builders/CharacterSkillsQuery';
 import { Resources } from '@/enum';
 import { Character } from '@/types';
-import { CharacterPromotionsQuery } from '@clients/CharacterPromotionsQuery';
+import { CharacterPromotionsQuery } from '@/builders/CharacterPromotionsQuery';
 
 /**
  * Query for fetching characters from the StarRailResStaticAPI.

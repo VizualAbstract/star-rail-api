@@ -13,7 +13,7 @@ export type Config = {
 };
 
 /**
- * Base class for all clients.
+ * Base class for all builders.
  * @template T - Type of the data to be fetched.
  * @class QueryBuilder
  * @abstract
@@ -23,18 +23,18 @@ export type Config = {
  *   super(config);
  * }
  * }
- * const client = new MyQuery();
- * client.get().then(data => console.log(data));
- * client.list().then(data => console.log(data));
- * client.getByID('1').then(data => console.log(data));
+ * const query = new MyQuery();
+ * query.get().then(data => console.log(data));
+ * query.list().then(data => console.log(data));
+ * query.getByID('1').then(data => console.log(data));
  * @see
  *
- * @param {Config} [config] - Options for the client.
- * @param {string} [config.baseUrl] - Base URL for the client.
- * @param {string} [config.assetUrl] - Asset URL for the client.
+ * @param {Config} [config] - Options for the query.
+ * @param {string} [config.baseUrl] - Base URL for the query.
+ * @param {string} [config.assetUrl] - Asset URL for the query.
  * @param {AxiosCacheInstance} [config.cache] - Axios cache instance.
- * @param {Languages} [config.language] - Language for the client.
- * @param {Resources} [config.resource] - Resource for the client.
+ * @param {Languages} [config.language] - Language for the query.
+ * @param {Resources} [config.resource] - Resource for the query.
  * @returns {void}
  *
  * Retrieval methods
@@ -50,7 +50,7 @@ abstract class QueryBuilder<T> {
   protected resource?: Resources;
   protected language: Languages;
 
-  protected client: AxiosCacheInstance;
+  protected queryBuilder: AxiosCacheInstance;
 
   constructor(config?: Config) {
     const { baseUrl, assetUrl, language, resource } = config || {};
@@ -64,7 +64,7 @@ abstract class QueryBuilder<T> {
       baseURL: this.baseUrl,
     });
 
-    this.client = setupCache(axiosClient, {
+    this.queryBuilder = setupCache(axiosClient, {
       ttl: 1000 * 60 * 6,
       cacheTakeover: false,
       storage: buildWebStorage(localStorage, 'HSR-Query_'),
@@ -77,7 +77,7 @@ abstract class QueryBuilder<T> {
       throw new Error('Resource not defined.');
     }
     const fetchURL = `${this.baseUrl}/${this.language}/${this.resource}.json`;
-    return this.client.get<Record<string, T>>(fetchURL);
+    return this.queryBuilder.get<Record<string, T>>(fetchURL);
   }
 
   async get(): Promise<Record<string, T>> {

@@ -2,7 +2,7 @@ import QueryBuilder, { Config } from '@/QueryBuilder';
 import { Characters, Resources } from '@/enum';
 import { CharacterToIDs } from '@/utils';
 import { CharacterPromotion } from '@/types';
-import { ItemsQuery } from '@clients/ItemsQuery';
+import { ItemsQuery } from '@builders/ItemsQuery';
 
 export class CharacterPromotionsQuery extends QueryBuilder<CharacterPromotion> {
   private itemsQuery?: ItemsQuery;
