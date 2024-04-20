@@ -1,7 +1,7 @@
 import { Stats } from '@/enum';
 
 // Achievements
-export interface Achievements {
+export interface Achievement {
   id: string;
   series_id: string;
   title: string;

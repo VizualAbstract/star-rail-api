@@ -1,5 +1,6 @@
 import BaseClient, { ClientOptions } from '@/BaseClient';
-import { CharacterToIDs, Characters, Resources } from '@/enum';
+import { Characters, Resources } from '@/enum';
+import { CharacterToIDs } from '@/utils';
 import { CharacterPromotion } from '@/types';
 import { ItemsClient } from '@clients/ItemsClient';
 
@@ -16,6 +17,8 @@ export class CharacterPromotionsClient extends BaseClient<CharacterPromotion> {
 
   withMaterials(): CharacterPromotionsClient {
     this.fetchMaterials = true;
+    this.getItemsClient();
+
     return this;
   }
 
@@ -53,11 +56,11 @@ export class CharacterPromotionsClient extends BaseClient<CharacterPromotion> {
     characterPromotion: CharacterPromotion,
   ): Promise<CharacterPromotion> {
     if (
-      this.fetchMaterials &&
+      this.itemsClient &&
       characterPromotion.materials &&
       characterPromotion.materials.length > 0
     ) {
-      const items = await this.getItemsClient().get();
+      const items = await this.itemsClient.get();
 
       characterPromotion._materials = characterPromotion.materials.map((promotion) =>
         promotion.map((material) => items[material.id]),
