@@ -2,14 +2,14 @@ import QueryBuilder from '@/QueryBuilder';
 
 export { Characters, CharacterIDs, Resources, Stats, Languages, Properties, Paths } from '@/enum';
 
-export { AchievementsQuery } from '@/builders/AchievementsQuery';
-export { AvatarsQuery } from '@/builders/AvatarsQuery';
-export { CharacterPromotionsQuery } from '@/builders/CharacterPromotionsQuery';
-export { CharacterRanksQuery } from '@/builders/CharacterRanksQuery';
-export { CharactersQuery } from '@/builders/CharactersQuery';
-export { CharacterSkillsQuery } from '@/builders/CharacterSkillsQuery';
-export { CharacterSkillTreesQuery } from '@/builders/CharacterSkillTreesQuery';
-export { ItemsQuery } from '@builders/ItemsQuery';
+export { AchievementQuery } from '@/builders/AchievementQuery';
+export { AvatarQuery } from '@/builders/AvatarQuery';
+export { CharacterPromotionQuery } from '@/builders/CharacterPromotionQuery';
+export { CharacterRankQuery } from '@/builders/CharacterRankQuery';
+export { CharacterQuery } from '@/builders/CharacterQuery';
+export { CharacterSkillQuery } from '@/builders/CharacterSkillQuery';
+export { CharacterSkillTreeQuery } from '@/builders/CharacterSkillTreeQuery';
+export { ItemQuery } from '@/builders/ItemQuery';
 
 export type {
   Achievement,

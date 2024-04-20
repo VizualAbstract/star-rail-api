@@ -2,10 +2,10 @@ import QueryBuilder, { Config } from '@/QueryBuilder';
 import { Characters, Resources } from '@/enum';
 import { CharacterToIDs } from '@/utils';
 import { CharacterPromotion } from '@/types';
-import { ItemsQuery } from '@builders/ItemsQuery';
+import { ItemQuery } from '@/builders/ItemQuery';
 
-export class CharacterPromotionsQuery extends QueryBuilder<CharacterPromotion> {
-  private itemsQuery?: ItemsQuery;
+export class CharacterPromotionQuery extends QueryBuilder<CharacterPromotion> {
+  private itemQuery?: ItemQuery;
 
   private fetchMaterials = false;
 
@@ -15,9 +15,9 @@ export class CharacterPromotionsQuery extends QueryBuilder<CharacterPromotion> {
     this.config = { ...config, resource: Resources.characterPromotions };
   }
 
-  withMaterials(): CharacterPromotionsQuery {
+  withMaterials(): CharacterPromotionQuery {
     this.fetchMaterials = true;
-    this.getItemsQuery();
+    this.getItemQuery();
 
     return this;
   }
@@ -44,23 +44,19 @@ export class CharacterPromotionsQuery extends QueryBuilder<CharacterPromotion> {
     return items;
   }
 
-  private getItemsQuery(): ItemsQuery {
-    if (!this.itemsQuery) {
-      this.itemsQuery = new ItemsQuery(this.config);
+  private getItemquery(): ItemQuery {
+    if (!this.itemQuery) {
+      this.itemQuery = new ItemQuery(this.config);
     }
 
-    return this.itemsQuery;
+    return this.itemQuery;
   }
 
   private async populateMaterials(
     characterPromotion: CharacterPromotion,
   ): Promise<CharacterPromotion> {
-    if (
-      this.itemsQuery &&
-      characterPromotion.materials &&
-      characterPromotion.materials.length > 0
-    ) {
-      const items = await this.itemsQuery.get();
+    if (this.itemQuery && characterPromotion.materials && characterPromotion.materials.length > 0) {
+      const items = await this.itemQuery.get();
 
       characterPromotion._materials = characterPromotion.materials.map((promotion) =>
         promotion.map((material) => items[material.id]),
