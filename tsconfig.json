@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
-    "baseUrl": "./src",
-    "rootDir": "./src",
+    "baseUrl": ".",
+    "rootDir": ".",
     "target": "ESNext",
     "module": "ESNext",
     "moduleResolution": "Node",
@@ -21,7 +21,11 @@
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "noImplicitReturns": false,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "paths": {
+      "@/*": ["src/*"],
+      "@clients/*": ["src/clients/*"],
+    }
   },
   "include": ["src"],
   "exclude": ["node_modules"],

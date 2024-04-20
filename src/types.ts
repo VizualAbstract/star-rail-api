@@ -1,4 +1,14 @@
-import { Stats } from './enum';
+import { Stats } from '@/enum';
+
+// Achievements
+export interface Achievement {
+  id: string;
+  series_id: string;
+  title: string;
+  desc: string;
+  hide_desc: string;
+  hide: boolean;
+}
 
 // Avatar
 export interface Avatar {
@@ -15,6 +25,8 @@ export interface CharacterPromotion {
     CharacterPromotionStat
   >;
   materials: CharacterPromotionMaterial[][];
+
+  _materials?: Item[][];
 }
 
 export interface CharacterPromotionStat {
@@ -46,6 +58,13 @@ export interface CharacterRankMaterial {
 export interface CharacterRankLevelUpSkill {
   id: string;
   level: number;
+}
+
+// Avatar
+export interface Avatar {
+  id: string;
+  name: string;
+  icon: string;
 }
 
 // Character Skill
@@ -119,6 +138,7 @@ export interface Character {
   _ranks?: CharacterRank[];
   _skills?: CharacterSkill[];
   _skill_trees?: CharacterSkillTree[];
+  _characterPromotions?: CharacterPromotion;
 }
 
 // Description

@@ -1,10 +1,10 @@
-import BaseClient, { ClientOptions } from '../BaseClient';
-import { CharacterRanksClient } from './CharacterRanksClient';
-import { CharacterSkillTreesClient } from './CharacterSkillTreesClient';
-import { CharacterSkillsClient } from './CharacterSkillsClient';
-import { Resources } from '../enum';
-import { Character } from '../types';
-import utils from '../utils';
+import BaseClient, { ClientOptions } from '@/BaseClient';
+import { CharacterRanksClient } from '@clients/CharacterRanksClient';
+import { CharacterSkillTreesClient } from '@clients/CharacterSkillTreesClient';
+import { CharacterSkillsClient } from '@clients/CharacterSkillsClient';
+import { Resources } from '@/enum';
+import { Character } from '@/types';
+import { CharacterPromotionsClient } from '@clients/CharacterPromotionsClient';
 
 /**
  * Client for fetching characters from the StarRailResStaticAPI.
@@ -30,6 +30,8 @@ import utils from '../utils';
  * @method withRanks - Include ranks in the response.
  * @method withSkills - Include skills in the response.
  * @method withSkillTrees - Include skill trees in the response.
+ * @method withPromotions - Include promotions in the response.
+ * @method withMaterials - Include materials in the promotions response.
  * @method withImages - Include full image paths in the response.
  *
  * Retrieval methods
@@ -38,16 +40,17 @@ import utils from '../utils';
  * @method list - List all characters.
  */
 export class CharactersClient extends BaseClient<Character> {
-  private options: ClientOptions;
-
   private ranksClient?: CharacterRanksClient;
   private skillsClient?: CharacterSkillsClient;
   private skillTreesClient?: CharacterSkillTreesClient;
+  private characterPromotionsClient?: CharacterPromotionsClient;
 
   private fetchRanks: boolean = false;
   private fetchSkills: boolean = false;
   private fetchSkillTrees: boolean = false;
-  private includeFullImagePath: boolean = false;
+  private fetchPromotions: boolean = false;
+  private fetchMaterials: boolean = false;
+  private includeImagePaths: boolean = false;
 
   constructor(options?: ClientOptions) {
     super({ ...options, resource: Resources.characters });
@@ -57,21 +60,43 @@ export class CharactersClient extends BaseClient<Character> {
 
   withRanks(): CharactersClient {
     this.fetchRanks = true;
+    this.getRanksClient();
+
     return this;
   }
 
   withSkills(): CharactersClient {
     this.fetchSkills = true;
+    this.getSkillsClient();
+
     return this;
   }
 
   withSkillTrees(): CharactersClient {
     this.fetchSkillTrees = true;
+    this.getSkillTreesClient();
+
+    return this;
+  }
+
+  withPromotions(): CharactersClient {
+    this.fetchPromotions = true;
+    this.getCharacterPromotionsClient();
+
+    return this;
+  }
+
+  withMaterials(): CharactersClient {
+    if (this.fetchPromotions) {
+      this.fetchMaterials = true;
+      this.addMaterialsToCharacterPromotions();
+    }
+
     return this;
   }
 
   withImages(): CharactersClient {
-    this.includeFullImagePath = true;
+    this.includeImagePaths = true;
 
     return this;
   }
@@ -79,7 +104,6 @@ export class CharactersClient extends BaseClient<Character> {
   async getByID(id: string | number): Promise<Character> {
     let character = await super.getByID(id);
 
-    console.time('getByID');
     if (this.fetchRanks) {
       character = await this.populateRanks(character);
     }
@@ -92,10 +116,13 @@ export class CharactersClient extends BaseClient<Character> {
       character = await this.populateSkillTrees(character);
     }
 
-    if (this.includeFullImagePath) {
-      character = await this.populateFullImagePaths(character);
+    if (this.fetchPromotions) {
+      character = await this.populateCharacterPromotions(character);
     }
-    console.timeEnd('getByID');
+
+    if (this.includeImagePaths) {
+      character = await this.injectImagePaths(character);
+    }
 
     return character;
   }
@@ -104,7 +131,10 @@ export class CharactersClient extends BaseClient<Character> {
     const characters = await this.list();
     let character = characters.find((char) => char.name === name);
 
-    console.time('getByName');
+    if (!character) {
+      return character;
+    }
+
     if (character && this.fetchRanks) {
       character = await this.populateRanks(character);
     }
@@ -117,18 +147,20 @@ export class CharactersClient extends BaseClient<Character> {
       character = await this.populateSkillTrees(character);
     }
 
-    if (character && this.includeFullImagePath) {
-      character = await this.populateFullImagePaths(character);
+    if (character && this.fetchPromotions) {
+      character = await this.populateCharacterPromotions(character);
     }
 
-    console.timeEnd('getByName');
+    if (character && this.includeImagePaths) {
+      character = await this.injectImagePaths(character);
+    }
+
     return character;
   }
 
   async list(): Promise<Character[]> {
     let characters = await super.list();
 
-    console.time('list');
     if (this.fetchRanks) {
       characters = await Promise.all(characters.map((char) => this.populateRanks(char)));
     }
@@ -141,10 +173,15 @@ export class CharactersClient extends BaseClient<Character> {
       characters = await Promise.all(characters.map((char) => this.populateSkillTrees(char)));
     }
 
-    if (this.includeFullImagePath) {
-      characters = await Promise.all(characters.map((char) => this.populateFullImagePaths(char)));
+    if (this.fetchPromotions) {
+      characters = await Promise.all(
+        characters.map((char) => this.populateCharacterPromotions(char)),
+      );
     }
-    console.timeEnd('list');
+
+    if (this.includeImagePaths) {
+      characters = await Promise.all(characters.map((char) => this.injectImagePaths(char)));
+    }
 
     return characters;
   }
@@ -173,10 +210,23 @@ export class CharactersClient extends BaseClient<Character> {
     return this.skillTreesClient;
   }
 
-  // Helper method to fetch ranks and add them to the character
+  private getCharacterPromotionsClient(): CharacterPromotionsClient {
+    if (!this.characterPromotionsClient) {
+      this.characterPromotionsClient = new CharacterPromotionsClient(this.options);
+    }
+
+    return this.characterPromotionsClient;
+  }
+
+  private addMaterialsToCharacterPromotions() {
+    if (this.characterPromotionsClient && this.fetchMaterials) {
+      this.characterPromotionsClient.withMaterials();
+    }
+  }
+
   private async populateRanks(character: Character): Promise<Character> {
-    if (this.fetchRanks && character.ranks && character.ranks.length > 0) {
-      const ranks = await this.getRanksClient().get();
+    if (this.ranksClient && character.ranks && character.ranks.length > 0) {
+      const ranks = await this.ranksClient.get();
 
       character._ranks = character.ranks.map((rankId) => ranks[rankId]);
     }
@@ -185,8 +235,8 @@ export class CharactersClient extends BaseClient<Character> {
   }
 
   private async populateSkills(character: Character): Promise<Character> {
-    if (this.fetchSkills && character.skills && character.skills.length > 0) {
-      const skills = await this.getSkillsClient().get();
+    if (this.skillsClient && character.skills && character.skills.length > 0) {
+      const skills = await this.skillsClient.get();
 
       character._skills = character.skills.map((skillId) => skills[skillId]);
     }
@@ -195,8 +245,8 @@ export class CharactersClient extends BaseClient<Character> {
   }
 
   private async populateSkillTrees(character: Character): Promise<Character> {
-    if (this.fetchSkillTrees && character.skill_trees && character.skill_trees.length > 0) {
-      const skillTrees = await this.getSkillTreesClient().get();
+    if (this.skillTreesClient && character.skill_trees && character.skill_trees.length > 0) {
+      const skillTrees = await this.skillTreesClient.get();
 
       character._skill_trees = character.skill_trees.map((skillTreeId) => skillTrees[skillTreeId]);
     }
@@ -204,8 +254,15 @@ export class CharactersClient extends BaseClient<Character> {
     return character;
   }
 
-  private async populateFullImagePaths(character: Character): Promise<Character> {
-    utils.updateImagePaths(character, this.options?.assetUrl);
+  private async populateCharacterPromotions(character: Character): Promise<Character> {
+    if (this.characterPromotionsClient) {
+      const characterPromotions = await this.characterPromotionsClient.getByCharacterID(
+        character.id,
+      );
+
+      character._characterPromotions = characterPromotions;
+    }
+
     return character;
   }
 }

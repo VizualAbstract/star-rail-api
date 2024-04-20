@@ -45,6 +45,10 @@ export enum Characters {
   BlackSwan = 'Black Swan',
   Acheron = 'Acheron',
   Misha = 'Misha',
+  PlayerBoyDestruction = 'PlayerBoyDestruction',
+  PlayerGirlDestruction = 'PlayerGirlDestruction',
+  PlayerBoyPreservation = 'PlayerBoyPreservation',
+  PlayerGirlPreservation = 'PlayerGirlPreservation',
 }
 
 export enum CharacterIDs {
@@ -101,6 +105,7 @@ export enum CharacterIDs {
 }
 
 export enum Resources {
+  achievements = 'achievements',
   avatars = 'avatars',
   characterPromotions = 'character_promotions',
   characterRanks = 'character_ranks',
@@ -121,9 +126,11 @@ export enum Resources {
   relicSubAffixes = 'relic_sub_affixes',
   relics = 'relics',
   simulatedBlessings = 'simulated_blessings',
+  simulatedBlocks = 'simulated_blocks',
   simulatedCurious = 'simulated_curious',
   simulatedEvents = 'simulated_events',
 }
+
 export enum Stats {
   hp = 'hp',
   atk = 'atk',
@@ -132,6 +139,75 @@ export enum Stats {
   crit = 'taunt',
   dodge = 'crit_rate',
   block = 'crit_dmg',
+}
+
+export enum RelicSets {
+  PasserbyOfWanderingCloud = 'Passerby of Wandering Cloud',
+  MusketeerOfWildWheat = 'Musketeer of Wild Wheat',
+  KnightOfPurityPalace = 'Knight of Purity Palace',
+  HunterOfGlacialForest = 'Hunter of Glacial Forest',
+  ChampionOfStreetwiseBoxing = 'Champion of Streetwise Boxing',
+  GuardOfWutheringSnow = 'Guard of Wuthering Snow',
+  FiresmithOfLavaForging = 'Firesmith of Lava-Forging',
+  GeniusOfBrilliantStars = 'Genius of Brilliant Stars',
+  BandOfSizzlingThunder = 'Band of Sizzling Thunder',
+  EagleOfTwilightLine = 'Eagle of Twilight Line',
+  ThiefOfShootingMeteor = 'Thief of Shooting Meteor',
+  LongevousDisciple = 'Longevous Disciple',
+  MessengerTraversingHackerspace = 'Messenger Traversing Hackerspace',
+  TheAshblazingGrandDuke = 'The Ashblazing Grand Duke',
+  PrisonerInDeepConfinement = 'Prisoner in Deep Confinement',
+  PioneerDiverOfDeadWaters = 'Pioneer Diver of Dead Waters',
+  WatchmakerMasterOfDreamMachinations = 'Watchmaker, Master of Dream Machinations',
+  SpaceSealingStation = 'Space Sealing Station',
+  FleetOfTheAgeless = 'Fleet of the Ageless',
+  PanCosmicCommercialEnterprise = 'Pan-Cosmic Commercial Enterprise',
+  BelobogOfTheArchitects = 'Belobog of the Architects',
+  CelestialDifferentiator = 'Celestial Differentiator',
+  InertSalsotto = 'Inert Salsotto',
+  TaliaKingdomOfBanditry = 'Talia: Kingdom of Banditry',
+  SprightlyVonwacq = 'Sprightly Vonwacq',
+  RutilantArena = 'Rutilant Arena',
+  BrokenKeel = 'Broken Keel',
+  FirmamentFrontlineGlamoth = 'Firmament Frontline: Glamoth',
+  PenaconyLandOfTheDreams = 'Penacony, Land of the Dreams',
+  SigoniaTheUnclaimedDesolation = 'Sigonia, the Unclaimed Desolation',
+  IzumoGenseiAndTakamaDivineRealm = 'Izumo Gensei and Takama Divine Realm',
+}
+
+export enum RelicSetIDs {
+  PasserbyOfWanderingCloud = '101',
+  MusketeerOfWildWheat = '102',
+  KnightOfPurityPalace = '103',
+  HunterOfGlacialForest = '104',
+  ChampionOfStreetwiseBoxing = '105',
+  GuardOfWutheringSnow = '106',
+  FiresmithOfLavaForging = '107',
+  GeniusOfBrilliantStars = '108',
+  BandOfSizzlingThunder = '109',
+  EagleOfTwilightLine = '110',
+  ThiefOfShootingMeteor = '111',
+  WastelanderOfBanditryDesert = '112',
+  LongevousDisciple = '113',
+  MessengerTraversingHackerspace = '114',
+  TheAshblazingGrandDuke = '115',
+  PrisonerInDeepConfinement = '116',
+  PioneerDiverOfDeadWaters = '117',
+  WatchmakerMasterOfDreamMachinations = '118',
+  SpaceSealingStation = '301',
+  FleetOfTheAgeless = '302',
+  PanCosmicCommercialEnterprise = '303',
+  BelobogOfTheArchitects = '304',
+  CelestialDifferentiator = '305',
+  InertSalsotto = '306',
+  TaliaKingdomOfBanditry = '307',
+  SprightlyVonwacq = '308',
+  RutilantArena = '309',
+  BrokenKeel = '310',
+  FirmamentFrontlineGlamoth = '311',
+  PenaconyLandOfTheDreams = '312',
+  SigoniaTheUnclaimedDesolation = '313',
+  IzumoGenseiAndTakamaDivineRealm = '314',
 }
 
 export enum Languages {

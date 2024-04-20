@@ -1,6 +1,6 @@
-import BaseClient, { ClientOptions } from '../BaseClient';
-import { Resources } from '../enum';
-import { CharacterRank } from '../types';
+import BaseClient, { ClientOptions } from '@/BaseClient';
+import { Resources } from '@/enum';
+import { CharacterRank } from '@/types';
 
 export class CharacterRanksClient extends BaseClient<CharacterRank> {
   constructor(options?: ClientOptions) {
