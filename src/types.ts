@@ -15,6 +15,8 @@ export interface CharacterPromotion {
     CharacterPromotionStat
   >;
   materials: CharacterPromotionMaterial[][];
+
+  _materials?: Item[][];
 }
 
 export interface CharacterPromotionStat {
@@ -46,6 +48,13 @@ export interface CharacterRankMaterial {
 export interface CharacterRankLevelUpSkill {
   id: string;
   level: number;
+}
+
+// Avatar
+export interface Avatar {
+  id: string;
+  name: string;
+  icon: string;
 }
 
 // Character Skill
@@ -119,6 +128,7 @@ export interface Character {
   _ranks?: CharacterRank[];
   _skills?: CharacterSkill[];
   _skill_trees?: CharacterSkillTree[];
+  _characterPromotions?: CharacterPromotion;
 }
 
 // Description

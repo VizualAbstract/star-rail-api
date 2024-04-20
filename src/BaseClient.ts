@@ -2,6 +2,7 @@ import Axios, { AxiosResponse } from 'axios';
 import { AxiosCacheInstance, buildWebStorage, setupCache } from 'axios-cache-interceptor';
 import { ASSET_URL, BASE_URL } from './constants';
 import { Languages, Resources } from './enum';
+import utils from 'utils';
 
 export type ClientOptions = {
   baseUrl?: string;
@@ -43,6 +44,7 @@ export type ClientOptions = {
  *
  */
 abstract class BaseClient<T> {
+  protected options: ClientOptions;
   protected baseUrl: string;
   protected assetUrl: string;
   protected resource?: Resources;
@@ -56,6 +58,7 @@ abstract class BaseClient<T> {
     this.assetUrl = assetUrl || ASSET_URL;
     this.language = language || Languages.english;
     this.resource = resource;
+    this.options = options || {};
 
     const axiosClient = Axios.create({
       baseURL: this.baseUrl,
@@ -94,6 +97,11 @@ abstract class BaseClient<T> {
       throw new Error(`${this.resource} with ID '${id}' not found.`);
     }
     return item;
+  }
+
+  async injectImagePaths(obj: T): Promise<T> {
+    utils.updateImagePaths(obj, this.options?.assetUrl);
+    return obj;
   }
 }
 

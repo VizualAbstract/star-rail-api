@@ -1,6 +1,6 @@
 ### Star Rail API
 
-This API client follows a builder-style approach and is specifically tailored for use with [StarRailStaticAPI](https://github.com/vizualabstract/StarRailStaticAPI).
+[Star Rail API](https://github.com/VizualAbstract/star-rail-api) provides a query builder specifically tailored to use with [StarRailStaticAPI](https://github.com/vizualabstract/StarRailStaticAPI), providing a variety of methods to join and enrich the data.
 
 ## Clients
 
