@@ -44,7 +44,7 @@ export class CharacterPromotionQuery extends QueryBuilder<CharacterPromotion> {
     return items;
   }
 
-  private getItemquery(): ItemQuery {
+  private getItemQuery(): ItemQuery {
     if (!this.itemQuery) {
       this.itemQuery = new ItemQuery(this.config);
     }

@@ -39,7 +39,7 @@ import { CharacterPromotionQuery } from '@/builders/CharacterPromotionQuery';
  * @method getByName - Get a character by name.
  * @method list - List all characters.
  */
-export class Characterquery extends QueryBuilder<Character> {
+export class CharacterQuery extends QueryBuilder<Character> {
   private rankQuery?: CharacterRankQuery;
   private skillQuery?: CharacterSkillQuery;
   private skillTreeQuery?: CharacterSkillTreeQuery;
@@ -58,35 +58,35 @@ export class Characterquery extends QueryBuilder<Character> {
     this.config = { ...config, resource: Resources.characters };
   }
 
-  withRanks(): Characterquery {
+  withRanks(): CharacterQuery {
     this.fetchRanks = true;
     this.getRankQuery();
 
     return this;
   }
 
-  withSkills(): Characterquery {
+  withSkills(): CharacterQuery {
     this.fetchSkills = true;
     this.getSkillQuery();
 
     return this;
   }
 
-  withSkillTrees(): Characterquery {
+  withSkillTrees(): CharacterQuery {
     this.fetchSkillTrees = true;
     this.getSkillTreeQuery();
 
     return this;
   }
 
-  withPromotions(): Characterquery {
+  withPromotions(): CharacterQuery {
     this.fetchPromotions = true;
     this.getCharacterPromotionQuery();
 
     return this;
   }
 
-  withMaterials(): Characterquery {
+  withMaterials(): CharacterQuery {
     if (this.fetchPromotions) {
       this.fetchMaterials = true;
       this.addMaterialsToCharacterPromotions();
@@ -95,7 +95,7 @@ export class Characterquery extends QueryBuilder<Character> {
     return this;
   }
 
-  withImages(): Characterquery {
+  withImages(): CharacterQuery {
     this.includeImagePaths = true;
 
     return this;

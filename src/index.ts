@@ -1,5 +1,3 @@
-import QueryBuilder from '@/QueryBuilder';
-
 export { Characters, CharacterIDs, Resources, Stats, Languages, Properties, Paths } from '@/enum';
 
 export { AchievementQuery } from '@/builders/AchievementQuery';
@@ -51,5 +49,3 @@ export type {
   SimulatedCurio,
   SimulatedEvent,
 } from './types';
-
-export default QueryBuilder;
