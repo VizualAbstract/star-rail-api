@@ -2,7 +2,7 @@ import QueryBuilder, { Config } from '@/QueryBuilder';
 import { Resources } from '@/enum';
 import { Avatar } from '@/types';
 
-export class AvatarsClient extends QueryBuilder<Avatar> {
+export class AvatarsQuery extends QueryBuilder<Avatar> {
   private includeImagePaths: boolean = false;
 
   constructor(config?: Config) {
@@ -11,7 +11,7 @@ export class AvatarsClient extends QueryBuilder<Avatar> {
     this.config = { ...config, resource: Resources.avatars };
   }
 
-  withImages(): AvatarsClient {
+  withImages(): AvatarsQuery {
     this.includeImagePaths = true;
     return this;
   }

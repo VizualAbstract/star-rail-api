@@ -2,7 +2,7 @@ import QueryBuilder, { Config } from '@/QueryBuilder';
 import { Resources } from '@/enum';
 import { Achievement } from '@/types';
 
-export class AchievementsClient extends QueryBuilder<Achievement> {
+export class AchievementsQuery extends QueryBuilder<Achievement> {
   constructor(config?: Config) {
     super({ ...config, resource: Resources.achievements });
 

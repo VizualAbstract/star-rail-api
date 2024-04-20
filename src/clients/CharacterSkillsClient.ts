@@ -2,7 +2,7 @@ import QueryBuilder, { Config } from '@/QueryBuilder';
 import { Resources } from '@/enum';
 import { CharacterSkill } from '@/types';
 
-export class CharacterSkillsClient extends QueryBuilder<CharacterSkill> {
+export class CharacterSkillsQuery extends QueryBuilder<CharacterSkill> {
   constructor(config?: Config) {
     super({ ...config, resource: Resources.characterSkills });
   }

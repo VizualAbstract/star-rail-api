@@ -67,7 +67,7 @@ abstract class QueryBuilder<T> {
     this.client = setupCache(axiosClient, {
       ttl: 1000 * 60 * 6,
       cacheTakeover: false,
-      storage: buildWebStorage(localStorage, 'HSR-Client_'),
+      storage: buildWebStorage(localStorage, 'HSR-Query_'),
       ...(config?.cache || {}),
     });
   }

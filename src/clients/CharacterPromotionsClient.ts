@@ -2,10 +2,10 @@ import QueryBuilder, { Config } from '@/QueryBuilder';
 import { Characters, Resources } from '@/enum';
 import { CharacterToIDs } from '@/utils';
 import { CharacterPromotion } from '@/types';
-import { ItemsClient } from '@clients/ItemsClient';
+import { ItemsQuery } from '@clients/ItemsQuery';
 
-export class CharacterPromotionsClient extends QueryBuilder<CharacterPromotion> {
-  private itemsClient?: ItemsClient;
+export class CharacterPromotionsQuery extends QueryBuilder<CharacterPromotion> {
+  private itemsQuery?: ItemsQuery;
 
   private fetchMaterials = false;
 
@@ -15,9 +15,9 @@ export class CharacterPromotionsClient extends QueryBuilder<CharacterPromotion> 
     this.config = { ...config, resource: Resources.characterPromotions };
   }
 
-  withMaterials(): CharacterPromotionsClient {
+  withMaterials(): CharacterPromotionsQuery {
     this.fetchMaterials = true;
-    this.getItemsClient();
+    this.getItemsQuery();
 
     return this;
   }
@@ -44,23 +44,23 @@ export class CharacterPromotionsClient extends QueryBuilder<CharacterPromotion> 
     return items;
   }
 
-  private getItemsClient(): ItemsClient {
-    if (!this.itemsClient) {
-      this.itemsClient = new ItemsClient(this.config);
+  private getItemsQuery(): ItemsQuery {
+    if (!this.itemsQuery) {
+      this.itemsQuery = new ItemsQuery(this.config);
     }
 
-    return this.itemsClient;
+    return this.itemsQuery;
   }
 
   private async populateMaterials(
     characterPromotion: CharacterPromotion,
   ): Promise<CharacterPromotion> {
     if (
-      this.itemsClient &&
+      this.itemsQuery &&
       characterPromotion.materials &&
       characterPromotion.materials.length > 0
     ) {
-      const items = await this.itemsClient.get();
+      const items = await this.itemsQuery.get();
 
       characterPromotion._materials = characterPromotion.materials.map((promotion) =>
         promotion.map((material) => items[material.id]),

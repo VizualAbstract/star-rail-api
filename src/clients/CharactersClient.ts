@@ -1,19 +1,19 @@
 import QueryBuilder, { Config } from '@/QueryBuilder';
-import { CharacterRanksClient } from '@clients/CharacterRanksClient';
-import { CharacterSkillTreesClient } from '@clients/CharacterSkillTreesClient';
-import { CharacterSkillsClient } from '@clients/CharacterSkillsClient';
+import { CharacterRanksQuery } from '@clients/CharacterRanksQuery';
+import { CharacterSkillTreesQuery } from '@clients/CharacterSkillTreesQuery';
+import { CharacterSkillsQuery } from '@clients/CharacterSkillsQuery';
 import { Resources } from '@/enum';
 import { Character } from '@/types';
-import { CharacterPromotionsClient } from '@clients/CharacterPromotionsClient';
+import { CharacterPromotionsQuery } from '@clients/CharacterPromotionsQuery';
 
 /**
- * Client for fetching characters from the StarRailResStaticAPI.
+ * Query for fetching characters from the StarRailResStaticAPI.
  *
- * @class CharactersClient
+ * @class CharactersQuery
  * @extends QueryBuilder
  *
  * @example
- * const client = new CharactersClient();
+ * const client = new CharactersQuery();
  * client.get().then(data => console.log(data));
  * client.list().then(data => console.log(data));
  * client.getByID('1001').then(data => console.log(data));
@@ -39,11 +39,11 @@ import { CharacterPromotionsClient } from '@clients/CharacterPromotionsClient';
  * @method getByName - Get a character by name.
  * @method list - List all characters.
  */
-export class CharactersClient extends QueryBuilder<Character> {
-  private ranksClient?: CharacterRanksClient;
-  private skillsClient?: CharacterSkillsClient;
-  private skillTreesClient?: CharacterSkillTreesClient;
-  private characterPromotionsClient?: CharacterPromotionsClient;
+export class CharactersQuery extends QueryBuilder<Character> {
+  private ranksQuery?: CharacterRanksQuery;
+  private skillsQuery?: CharacterSkillsQuery;
+  private skillTreesQuery?: CharacterSkillTreesQuery;
+  private characterPromotionsQuery?: CharacterPromotionsQuery;
 
   private fetchRanks: boolean = false;
   private fetchSkills: boolean = false;
@@ -58,35 +58,35 @@ export class CharactersClient extends QueryBuilder<Character> {
     this.config = { ...config, resource: Resources.characters };
   }
 
-  withRanks(): CharactersClient {
+  withRanks(): CharactersQuery {
     this.fetchRanks = true;
-    this.getRanksClient();
+    this.getRanksQuery();
 
     return this;
   }
 
-  withSkills(): CharactersClient {
+  withSkills(): CharactersQuery {
     this.fetchSkills = true;
-    this.getSkillsClient();
+    this.getSkillsQuery();
 
     return this;
   }
 
-  withSkillTrees(): CharactersClient {
+  withSkillTrees(): CharactersQuery {
     this.fetchSkillTrees = true;
-    this.getSkillTreesClient();
+    this.getSkillTreesQuery();
 
     return this;
   }
 
-  withPromotions(): CharactersClient {
+  withPromotions(): CharactersQuery {
     this.fetchPromotions = true;
-    this.getCharacterPromotionsClient();
+    this.getCharacterPromotionsQuery();
 
     return this;
   }
 
-  withMaterials(): CharactersClient {
+  withMaterials(): CharactersQuery {
     if (this.fetchPromotions) {
       this.fetchMaterials = true;
       this.addMaterialsToCharacterPromotions();
@@ -95,7 +95,7 @@ export class CharactersClient extends QueryBuilder<Character> {
     return this;
   }
 
-  withImages(): CharactersClient {
+  withImages(): CharactersQuery {
     this.includeImagePaths = true;
 
     return this;
@@ -186,47 +186,47 @@ export class CharactersClient extends QueryBuilder<Character> {
     return characters;
   }
 
-  private getRanksClient(): CharacterRanksClient {
-    if (!this.ranksClient) {
-      this.ranksClient = new CharacterRanksClient(this.config);
+  private getRanksQuery(): CharacterRanksQuery {
+    if (!this.ranksQuery) {
+      this.ranksQuery = new CharacterRanksQuery(this.config);
     }
 
-    return this.ranksClient;
+    return this.ranksQuery;
   }
 
-  private getSkillsClient(): CharacterSkillsClient {
-    if (!this.skillsClient) {
-      this.skillsClient = new CharacterSkillsClient(this.config);
+  private getSkillsQuery(): CharacterSkillsQuery {
+    if (!this.skillsQuery) {
+      this.skillsQuery = new CharacterSkillsQuery(this.config);
     }
 
-    return this.skillsClient;
+    return this.skillsQuery;
   }
 
-  private getSkillTreesClient(): CharacterSkillTreesClient {
-    if (!this.skillTreesClient) {
-      this.skillTreesClient = new CharacterSkillTreesClient(this.config);
+  private getSkillTreesQuery(): CharacterSkillTreesQuery {
+    if (!this.skillTreesQuery) {
+      this.skillTreesQuery = new CharacterSkillTreesQuery(this.config);
     }
 
-    return this.skillTreesClient;
+    return this.skillTreesQuery;
   }
 
-  private getCharacterPromotionsClient(): CharacterPromotionsClient {
-    if (!this.characterPromotionsClient) {
-      this.characterPromotionsClient = new CharacterPromotionsClient(this.config);
+  private getCharacterPromotionsQuery(): CharacterPromotionsQuery {
+    if (!this.characterPromotionsQuery) {
+      this.characterPromotionsQuery = new CharacterPromotionsQuery(this.config);
     }
 
-    return this.characterPromotionsClient;
+    return this.characterPromotionsQuery;
   }
 
   private addMaterialsToCharacterPromotions() {
-    if (this.characterPromotionsClient && this.fetchMaterials) {
-      this.characterPromotionsClient.withMaterials();
+    if (this.characterPromotionsQuery && this.fetchMaterials) {
+      this.characterPromotionsQuery.withMaterials();
     }
   }
 
   private async populateRanks(character: Character): Promise<Character> {
-    if (this.ranksClient && character.ranks && character.ranks.length > 0) {
-      const ranks = await this.ranksClient.get();
+    if (this.ranksQuery && character.ranks && character.ranks.length > 0) {
+      const ranks = await this.ranksQuery.get();
 
       character._ranks = character.ranks.map((rankId) => ranks[rankId]);
     }
@@ -235,8 +235,8 @@ export class CharactersClient extends QueryBuilder<Character> {
   }
 
   private async populateSkills(character: Character): Promise<Character> {
-    if (this.skillsClient && character.skills && character.skills.length > 0) {
-      const skills = await this.skillsClient.get();
+    if (this.skillsQuery && character.skills && character.skills.length > 0) {
+      const skills = await this.skillsQuery.get();
 
       character._skills = character.skills.map((skillId) => skills[skillId]);
     }
@@ -245,8 +245,8 @@ export class CharactersClient extends QueryBuilder<Character> {
   }
 
   private async populateSkillTrees(character: Character): Promise<Character> {
-    if (this.skillTreesClient && character.skill_trees && character.skill_trees.length > 0) {
-      const skillTrees = await this.skillTreesClient.get();
+    if (this.skillTreesQuery && character.skill_trees && character.skill_trees.length > 0) {
+      const skillTrees = await this.skillTreesQuery.get();
 
       character._skill_trees = character.skill_trees.map((skillTreeId) => skillTrees[skillTreeId]);
     }
@@ -255,8 +255,8 @@ export class CharactersClient extends QueryBuilder<Character> {
   }
 
   private async populateCharacterPromotions(character: Character): Promise<Character> {
-    if (this.characterPromotionsClient) {
-      const characterPromotions = await this.characterPromotionsClient.getByCharacterID(
+    if (this.characterPromotionsQuery) {
+      const characterPromotions = await this.characterPromotionsQuery.getByCharacterID(
         character.id,
       );
 
