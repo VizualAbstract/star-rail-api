@@ -155,6 +155,7 @@ export const CharacterToIDs: Record<string, string> = {
 };
 
 export enum Resources {
+  achievements = 'achievements',
   avatars = 'avatars',
   characterPromotions = 'character_promotions',
   characterRanks = 'character_ranks',
@@ -175,6 +176,7 @@ export enum Resources {
   relicSubAffixes = 'relic_sub_affixes',
   relics = 'relics',
   simulatedBlessings = 'simulated_blessings',
+  simulatedBlocks = 'simulated_blocks',
   simulatedCurious = 'simulated_curious',
   simulatedEvents = 'simulated_events',
 }

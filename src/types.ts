@@ -1,5 +1,15 @@
 import { Stats } from '@/enum';
 
+// Achievements
+export interface Achievements {
+  id: string;
+  series_id: string;
+  title: string;
+  desc: string;
+  hide_desc: string;
+  hide: boolean;
+}
+
 // Avatar
 export interface Avatar {
   id: string;
