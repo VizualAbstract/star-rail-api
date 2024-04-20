@@ -1,9 +1,9 @@
-import BaseClient from './BaseClient';
+import BaseClient from '@/BaseClient';
 
-export { Characters, CharacterIDs, Resources, Stats, Languages, Properties, Paths } from './enum';
+export { Characters, CharacterIDs, Resources, Stats, Languages, Properties, Paths } from '@/enum';
 
-export { CharacterRanksClient } from './clients/CharacterRanksClient';
-export { CharactersClient } from './clients/CharactersClient';
+export { CharacterRanksClient } from '@clients/CharacterRanksClient';
+export { CharactersClient } from '@clients/CharactersClient';
 
 export type {
   Avatar,

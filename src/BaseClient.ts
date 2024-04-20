@@ -1,8 +1,8 @@
 import Axios, { AxiosResponse } from 'axios';
 import { AxiosCacheInstance, buildWebStorage, setupCache } from 'axios-cache-interceptor';
-import { ASSET_URL, BASE_URL } from './constants';
-import { Languages, Resources } from './enum';
-import utils from 'utils';
+import { ASSET_URL, BASE_URL } from '@/constants';
+import { Languages, Resources } from '@/enum';
+import utils from '@/utils';
 
 export type ClientOptions = {
   baseUrl?: string;

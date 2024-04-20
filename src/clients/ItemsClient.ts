@@ -1,6 +1,6 @@
-import BaseClient, { ClientOptions } from 'BaseClient';
-import { Resources } from 'enum';
-import { Item } from 'types';
+import BaseClient, { ClientOptions } from '@/BaseClient';
+import { Resources } from '@/enum';
+import { Item } from '@/types';
 
 export class ItemsClient extends BaseClient<Item> {
   private includeImagePaths: boolean = false;

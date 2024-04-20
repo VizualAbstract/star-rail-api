@@ -6,6 +6,12 @@ import { defineConfig, UserConfig } from 'vite';
 export default defineConfig({
   base: './',
   plugins: [dts({ rollupTypes: true }), react()],
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './src'),
+      '@clients': path.resolve(__dirname, './src/clients'),
+    },
+  },
   build: {
     sourcemap: true,
     lib: {

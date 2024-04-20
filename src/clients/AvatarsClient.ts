@@ -1,6 +1,6 @@
-import BaseClient, { ClientOptions } from 'BaseClient';
-import { Resources } from 'enum';
-import { Avatar } from 'types';
+import BaseClient, { ClientOptions } from '@/BaseClient';
+import { Resources } from '@/enum';
+import { Avatar } from '@/types';
 
 export class AvatarsClient extends BaseClient<Avatar> {
   private includeImagePaths: boolean = false;

@@ -1,7 +1,7 @@
-import BaseClient, { ClientOptions } from 'BaseClient';
-import { CharacterToIDs, Characters, Resources } from 'enum';
-import { CharacterPromotion } from 'types';
-import { ItemsClient } from './ItemsClient';
+import BaseClient, { ClientOptions } from '@/BaseClient';
+import { CharacterToIDs, Characters, Resources } from '@/enum';
+import { CharacterPromotion } from '@/types';
+import { ItemsClient } from '@clients/ItemsClient';
 
 export class CharacterPromotionsClient extends BaseClient<CharacterPromotion> {
   private itemsClient?: ItemsClient;

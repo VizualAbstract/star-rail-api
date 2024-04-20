@@ -1,4 +1,4 @@
-import { Stats } from './enum';
+import { Stats } from '@/enum';
 
 // Avatar
 export interface Avatar {

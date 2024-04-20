@@ -1,10 +1,10 @@
-import BaseClient, { ClientOptions } from '../BaseClient';
-import { CharacterRanksClient } from './CharacterRanksClient';
-import { CharacterSkillTreesClient } from './CharacterSkillTreesClient';
-import { CharacterSkillsClient } from './CharacterSkillsClient';
-import { Resources } from '../enum';
-import { Character } from '../types';
-import { CharacterPromotionsClient } from './CharacterPromotionsClient';
+import BaseClient, { ClientOptions } from '@/BaseClient';
+import { CharacterRanksClient } from '@clients/CharacterRanksClient';
+import { CharacterSkillTreesClient } from '@clients/CharacterSkillTreesClient';
+import { CharacterSkillsClient } from '@clients/CharacterSkillsClient';
+import { Resources } from '@/enum';
+import { Character } from '@/types';
+import { CharacterPromotionsClient } from '@clients/CharacterPromotionsClient';
 
 /**
  * Client for fetching characters from the StarRailResStaticAPI.

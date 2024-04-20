@@ -1,6 +1,6 @@
-import BaseClient, { ClientOptions } from '../BaseClient';
-import { Resources } from '../enum';
-import { CharacterSkillTree } from '../types';
+import BaseClient, { ClientOptions } from '@/BaseClient';
+import { Resources } from '@/enum';
+import { CharacterSkillTree } from '@/types';
 
 export class CharacterSkillTreesClient extends BaseClient<CharacterSkillTree> {
   constructor(options?: ClientOptions) {
