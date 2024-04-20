@@ -18,12 +18,12 @@ export type Config = {
  * @class QueryBuilder
  * @abstract
  * @example
- * class MyClient extends QueryBuilder<MyData> {
+ * class MyQuery extends QueryBuilder<MyData> {
  *  constructor(config?: Config) {
  *   super(config);
  * }
  * }
- * const client = new MyClient();
+ * const client = new MyQuery();
  * client.get().then(data => console.log(data));
  * client.list().then(data => console.log(data));
  * client.getByID('1').then(data => console.log(data));
