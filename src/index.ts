@@ -1,4 +1,4 @@
-import BaseClient from '@/BaseClient';
+import QueryBuilder from '@/QueryBuilder';
 
 export { Characters, CharacterIDs, Resources, Stats, Languages, Properties, Paths } from '@/enum';
 
@@ -52,4 +52,4 @@ export type {
   SimulatedEvent,
 } from './types';
 
-export default BaseClient;
+export default QueryBuilder;

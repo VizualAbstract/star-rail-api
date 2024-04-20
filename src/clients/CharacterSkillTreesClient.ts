@@ -1,8 +1,8 @@
-import BaseClient, { ClientOptions } from '@/BaseClient';
+import QueryBuilder, { ClientOptions } from '@/QueryBuilder';
 import { Resources } from '@/enum';
 import { CharacterSkillTree } from '@/types';
 
-export class CharacterSkillTreesClient extends BaseClient<CharacterSkillTree> {
+export class CharacterSkillTreesClient extends QueryBuilder<CharacterSkillTree> {
   constructor(options?: ClientOptions) {
     super({ ...options, resource: Resources.characterSkillTrees });
   }

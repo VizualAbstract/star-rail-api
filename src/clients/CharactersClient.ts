@@ -1,4 +1,4 @@
-import BaseClient, { ClientOptions } from '@/BaseClient';
+import QueryBuilder, { ClientOptions } from '@/QueryBuilder';
 import { CharacterRanksClient } from '@clients/CharacterRanksClient';
 import { CharacterSkillTreesClient } from '@clients/CharacterSkillTreesClient';
 import { CharacterSkillsClient } from '@clients/CharacterSkillsClient';
@@ -10,7 +10,7 @@ import { CharacterPromotionsClient } from '@clients/CharacterPromotionsClient';
  * Client for fetching characters from the StarRailResStaticAPI.
  *
  * @class CharactersClient
- * @extends BaseClient
+ * @extends QueryBuilder
  *
  * @example
  * const client = new CharactersClient();
@@ -39,7 +39,7 @@ import { CharacterPromotionsClient } from '@clients/CharacterPromotionsClient';
  * @method getByName - Get a character by name.
  * @method list - List all characters.
  */
-export class CharactersClient extends BaseClient<Character> {
+export class CharactersClient extends QueryBuilder<Character> {
   private ranksClient?: CharacterRanksClient;
   private skillsClient?: CharacterSkillsClient;
   private skillTreesClient?: CharacterSkillTreesClient;

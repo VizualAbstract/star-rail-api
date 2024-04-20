@@ -1,8 +1,8 @@
-import BaseClient, { ClientOptions } from '@/BaseClient';
+import QueryBuilder, { ClientOptions } from '@/QueryBuilder';
 import { Resources } from '@/enum';
 import { Achievement } from '@/types';
 
-export class AchievementsClient extends BaseClient<Achievement> {
+export class AchievementsClient extends QueryBuilder<Achievement> {
   constructor(options?: ClientOptions) {
     super({ ...options, resource: Resources.achievements });
 

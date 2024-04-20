@@ -1,10 +1,10 @@
-import BaseClient, { ClientOptions } from '@/BaseClient';
+import QueryBuilder, { ClientOptions } from '@/QueryBuilder';
 import { Characters, Resources } from '@/enum';
 import { CharacterToIDs } from '@/utils';
 import { CharacterPromotion } from '@/types';
 import { ItemsClient } from '@clients/ItemsClient';
 
-export class CharacterPromotionsClient extends BaseClient<CharacterPromotion> {
+export class CharacterPromotionsClient extends QueryBuilder<CharacterPromotion> {
   private itemsClient?: ItemsClient;
 
   private fetchMaterials = false;

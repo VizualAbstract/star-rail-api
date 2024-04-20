@@ -1,8 +1,8 @@
-import BaseClient, { ClientOptions } from '@/BaseClient';
+import QueryBuilder, { ClientOptions } from '@/QueryBuilder';
 import { Resources } from '@/enum';
 import { Item } from '@/types';
 
-export class ItemsClient extends BaseClient<Item> {
+export class ItemsClient extends QueryBuilder<Item> {
   private includeImagePaths: boolean = false;
 
   constructor(options?: ClientOptions) {

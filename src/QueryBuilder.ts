@@ -4,7 +4,7 @@ import { ASSET_URL, BASE_URL } from '@/constants';
 import { Languages, Resources } from '@/enum';
 import utils from '@/utils';
 
-export type ClientOptions = {
+export type Config = {
   baseUrl?: string;
   assetUrl?: string;
   cache?: AxiosCacheInstance;
@@ -15,10 +15,10 @@ export type ClientOptions = {
 /**
  * Base class for all clients.
  * @template T - Type of the data to be fetched.
- * @class BaseClient
+ * @class QueryBuilder
  * @abstract
  * @example
- * class MyClient extends BaseClient<MyData> {
+ * class MyClient extends QueryBuilder<MyData> {
  *  constructor(options?: ClientOptions) {
  *   super(options);
  * }
@@ -43,8 +43,8 @@ export type ClientOptions = {
  * @method getByID - Get data by ID.
  *
  */
-abstract class BaseClient<T> {
-  protected options: ClientOptions;
+abstract class QueryBuilder<T> {
+  protected options: Config;
   protected baseUrl: string;
   protected assetUrl: string;
   protected resource?: Resources;
@@ -52,13 +52,13 @@ abstract class BaseClient<T> {
 
   protected client: AxiosCacheInstance;
 
-  constructor(options?: ClientOptions) {
-    const { baseUrl, assetUrl, language, resource } = options || {};
+  constructor(config?: Config) {
+    const { baseUrl, assetUrl, language, resource } = config || {};
     this.baseUrl = baseUrl || BASE_URL;
     this.assetUrl = assetUrl || ASSET_URL;
     this.language = language || Languages.english;
     this.resource = resource;
-    this.options = options || {};
+    this.options = config || {};
 
     const axiosClient = Axios.create({
       baseURL: this.baseUrl,
@@ -68,7 +68,7 @@ abstract class BaseClient<T> {
       ttl: 1000 * 60 * 6,
       cacheTakeover: false,
       storage: buildWebStorage(localStorage, 'HSR-Client_'),
-      ...(options?.cache || {}),
+      ...(config?.cache || {}),
     });
   }
 
@@ -105,4 +105,4 @@ abstract class BaseClient<T> {
   }
 }
 
-export default BaseClient;
+export default QueryBuilder;

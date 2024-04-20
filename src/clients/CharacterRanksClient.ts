@@ -1,8 +1,8 @@
-import BaseClient, { ClientOptions } from '@/BaseClient';
+import QueryBuilder, { ClientOptions } from '@/QueryBuilder';
 import { Resources } from '@/enum';
 import { CharacterRank } from '@/types';
 
-export class CharacterRanksClient extends BaseClient<CharacterRank> {
+export class CharacterRanksClient extends QueryBuilder<CharacterRank> {
   constructor(options?: ClientOptions) {
     super({ ...options, resource: Resources.characterRanks });
   }
