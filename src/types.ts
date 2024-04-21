@@ -48,6 +48,9 @@ export interface CharacterRank {
   materials: CharacterRankMaterial[];
   level_up_skills: CharacterRankLevelUpSkill[];
   icon: string;
+
+  _materials?: Item[];
+  _level_up_skills: CharacterSkill[];
 }
 
 export interface CharacterRankMaterial {
@@ -169,7 +172,7 @@ export interface Item {
 }
 
 // Light Cone Promotions
-export interface LightConePromotions {
+export interface LightConePromotion {
   id: string;
   values: Record<Stats.hp | Stats.atk | Stats.def, LightConePromotionStat>;
   materials: LightConePromotionMaterial[][];
