@@ -79,7 +79,7 @@ abstract class QueryBuilder<T> {
     }
     const fetchURL = `${this.config.baseUrl}/${this.config.language}/${this.config.resource}.json`;
     return this.queryBuilder.get<Record<string, T>>(fetchURL, {
-      id: 'HSR-Query',
+      id: this.config.resource,
     });
   }
 
@@ -108,7 +108,7 @@ abstract class QueryBuilder<T> {
   }
 
   async resetCache(): Promise<void> {
-    await this.queryBuilder.storage.remove('HSR-Query');
+    await this.queryBuilder.storage.remove(this.config?.resource || '');
   }
 }
 
