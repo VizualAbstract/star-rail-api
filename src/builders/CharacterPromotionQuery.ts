@@ -1,4 +1,4 @@
-import QueryBuilder, { Config } from '@/QueryBuilder';
+import QueryBuilder, { Config, QueryOptions } from '@/QueryBuilder';
 import { Characters, Resources } from '@/enum';
 import { CharacterToIDs } from '@/utils';
 import { CharacterPromotion } from '@/types';
@@ -7,25 +7,34 @@ import { ItemQuery } from '@/builders/ItemQuery';
 export class CharacterPromotionQuery extends QueryBuilder<CharacterPromotion> {
   private itemQuery?: ItemQuery;
 
-  private fetchMaterials = false;
+  protected options: QueryOptions = {
+    withMaterials: false,
+  };
 
   constructor(config?: Config) {
     super({ ...config, resource: Resources.characterPromotions });
-
-    this.config = { ...config, resource: Resources.characterPromotions };
   }
 
-  withMaterials(): CharacterPromotionQuery {
-    this.fetchMaterials = true;
-    this.getItemQuery();
+  async get(): Promise<Record<string, CharacterPromotion>> {
+    const characterPromotions = await this.list();
 
-    return this;
+    return Object.fromEntries(characterPromotions.map((promotion) => [promotion.id, promotion]));
   }
 
-  async getByCharacterID(id: string | number): Promise<CharacterPromotion> {
+  async list(): Promise<CharacterPromotion[]> {
+    let items = await super.list();
+
+    if (this.options.withMaterials) {
+      items = await Promise.all(items.map((item) => this.populateMaterials(item)));
+    }
+
+    return items;
+  }
+
+  async getByID(id: string | number): Promise<CharacterPromotion> {
     let characterPromotion = await super.getByID(id);
 
-    if (this.fetchMaterials) {
+    if (this.options.withMaterials) {
       characterPromotion = await this.populateMaterials(characterPromotion);
     }
 
@@ -35,13 +44,14 @@ export class CharacterPromotionQuery extends QueryBuilder<CharacterPromotion> {
   async getByCharacterName(character: Characters): Promise<CharacterPromotion> {
     const id = CharacterToIDs[character];
 
-    return this.getByCharacterID(id);
+    return this.getByID(id);
   }
 
-  async list(): Promise<CharacterPromotion[]> {
-    const items = await super.list();
+  withMaterials(): CharacterPromotionQuery {
+    this.options.withMaterials = true;
+    this.getItemQuery();
 
-    return items;
+    return this;
   }
 
   private getItemQuery(): ItemQuery {
@@ -64,5 +74,21 @@ export class CharacterPromotionQuery extends QueryBuilder<CharacterPromotion> {
     }
 
     return characterPromotion;
+  }
+
+  withOptions(options: QueryOptions): CharacterPromotionQuery {
+    this.options = { ...this.options, ...options };
+
+    Object.keys(options).forEach((optionKey) => {
+      if (options[optionKey]) {
+        switch (optionKey) {
+          case 'withImages':
+            this.withMaterials();
+            break;
+        }
+      }
+    });
+
+    return this;
   }
 }

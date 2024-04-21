@@ -59,9 +59,12 @@ abstract class QueryBuilder<T> {
   protected options: QueryOptions = {};
 
   constructor(config?: Config) {
+    this.config = { ...this.config, ...config };
+
     const axiosClient = Axios.create({
       baseURL: this.config.baseUrl,
     });
+
     this.queryBuilder = setupCache(axiosClient, {
       ttl: 1000 * 60 * 6,
       cacheTakeover: false,

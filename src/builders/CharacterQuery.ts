@@ -51,7 +51,7 @@ export class CharacterQuery extends QueryBuilder<Character> {
     withSkillTrees: false,
     withPromotions: false,
     withMaterials: false,
-    withImagePaths: false,
+    withImages: false,
   };
 
   constructor(config?: Config) {
@@ -85,8 +85,8 @@ export class CharacterQuery extends QueryBuilder<Character> {
       );
     }
 
-    if (this.options.withImagePaths) {
-      characters = await Promise.all(characters.map((char) => this.injectImagePaths(char)));
+    if (this.options.withImages) {
+      characters = await Promise.all(characters.map((char) => super.injectImagePaths(char)));
     }
 
     return characters;
@@ -111,8 +111,8 @@ export class CharacterQuery extends QueryBuilder<Character> {
       character = await this.populateCharacterPromotions(character);
     }
 
-    if (this.options.withImagePaths) {
-      character = await this.injectImagePaths(character);
+    if (this.options.withImages) {
+      character = await super.injectImagePaths(character);
     }
 
     return character;
@@ -167,7 +167,7 @@ export class CharacterQuery extends QueryBuilder<Character> {
   }
 
   withImages(): CharacterQuery {
-    this.options.withImagePaths = true;
+    this.options.withImages = true;
 
     return this;
   }
@@ -270,7 +270,7 @@ export class CharacterQuery extends QueryBuilder<Character> {
 
   private async populateCharacterPromotions(character: Character): Promise<Character> {
     if (this.characterPromotionQuery) {
-      const characterPromotions = await this.characterPromotionQuery.getByCharacterID(character.id);
+      const characterPromotions = await this.characterPromotionQuery.getByID(character.id);
       character._characterPromotions = characterPromotions;
     }
 

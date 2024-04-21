@@ -1,24 +1,37 @@
-import QueryBuilder, { Config } from '@/QueryBuilder';
+import QueryBuilder, { Config, QueryOptions } from '@/QueryBuilder';
 import { Resources } from '@/enum';
 import { Avatar } from '@/types';
 
 export class AvatarQuery extends QueryBuilder<Avatar> {
-  private includeImagePaths: boolean = false;
+  protected options: QueryOptions = {
+    withImages: false,
+  };
 
   constructor(config?: Config) {
     super({ ...config, resource: Resources.avatars });
   }
 
-  withImages(): AvatarQuery {
-    this.includeImagePaths = true;
-    return this;
+  async get(): Promise<Record<string, Avatar>> {
+    const avatars = await this.list();
+
+    return Object.fromEntries(avatars.map((avatar) => [avatar.id, avatar]));
+  }
+
+  async list(): Promise<Avatar[]> {
+    let avatars = await super.list();
+
+    if (this.options.withImages) {
+      avatars = await Promise.all(avatars.map((avatar) => super.injectImagePaths(avatar)));
+    }
+
+    return avatars;
   }
 
   async getByID(id: string | number): Promise<Avatar> {
     let avatar = await super.getByID(id);
 
-    if (this.includeImagePaths) {
-      avatar = await this.injectImagePaths(avatar);
+    if (this.options.withImages) {
+      avatar = await super.injectImagePaths(avatar);
     }
 
     return avatar;
@@ -32,20 +45,32 @@ export class AvatarQuery extends QueryBuilder<Avatar> {
       return avatar;
     }
 
-    if (avatar && this.includeImagePaths) {
-      avatar = await this.injectImagePaths(avatar);
+    if (this.options.withImages) {
+      avatar = await super.injectImagePaths(avatar);
     }
 
     return avatar;
   }
 
-  async list(): Promise<Avatar[]> {
-    let avatars = await super.list();
+  withImages(): AvatarQuery {
+    this.options.withImages = true;
 
-    if (this.includeImagePaths) {
-      avatars = await Promise.all(avatars.map((avatar) => this.injectImagePaths(avatar)));
-    }
+    return this;
+  }
 
-    return avatars;
+  withOptions(options: QueryOptions): AvatarQuery {
+    this.options = { ...this.options, ...options };
+
+    Object.keys(options).forEach((optionKey) => {
+      if (options[optionKey]) {
+        switch (optionKey) {
+          case 'withImages':
+            this.withImages();
+            break;
+        }
+      }
+    });
+
+    return this;
   }
 }

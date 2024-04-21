@@ -1,53 +1,76 @@
-import QueryBuilder, { Config } from '@/QueryBuilder';
+import QueryBuilder, { Config, QueryOptions } from '@/QueryBuilder';
 import { Resources } from '@/enum';
 import { Item } from '@/types';
 
 export class ItemQuery extends QueryBuilder<Item> {
-  private includeImagePaths: boolean = false;
+  protected options: QueryOptions = {
+    withImages: false,
+  };
 
   constructor(config?: Config) {
     super({ ...config, resource: Resources.items });
-
-    this.config = { ...config, resource: Resources.items };
   }
 
-  withImages(): ItemQuery {
-    this.includeImagePaths = true;
-    return this;
+  async get(): Promise<Record<string, Item>> {
+    const items = await this.list();
+
+    return Object.fromEntries(items.map((item) => [item.id, item]));
+  }
+
+  async list(): Promise<Item[]> {
+    let items = await super.list();
+
+    if (this.options.withImages) {
+      items = await Promise.all(items.map((item) => super.injectImagePaths(item)));
+    }
+
+    return items;
   }
 
   async getByID(id: string | number): Promise<Item> {
     let item = await super.getByID(id);
 
-    if (this.includeImagePaths) {
-      item = await this.injectImagePaths(item);
+    if (this.options.withImages) {
+      item = await super.injectImagePaths(item);
     }
 
     return item;
   }
 
   async getByName(name: string): Promise<Item | undefined> {
-    const items = await this.list();
+    const items = await super.list();
     let item = items.find((item) => item.name === name);
 
     if (!item) {
       return item;
     }
 
-    if (item && this.includeImagePaths) {
-      item = await this.injectImagePaths(item);
+    if (this.options.withImages) {
+      item = await super.injectImagePaths(item);
     }
 
     return item;
   }
 
-  async list(): Promise<Item[]> {
-    let items = await super.list();
+  withImages(): ItemQuery {
+    this.options.withImages = true;
 
-    if (this.includeImagePaths) {
-      items = await Promise.all(items.map((item) => this.injectImagePaths(item)));
-    }
+    return this;
+  }
 
-    return items;
+  withOptions(options: QueryOptions): ItemQuery {
+    this.options = { ...this.options, ...options };
+
+    Object.keys(options).forEach((optionKey) => {
+      if (options[optionKey]) {
+        switch (optionKey) {
+          case 'withImages':
+            this.withImages();
+            break;
+        }
+      }
+    });
+
+    return this;
   }
 }
