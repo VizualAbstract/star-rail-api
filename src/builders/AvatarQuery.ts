@@ -14,42 +14,45 @@ export class AvatarQuery extends QueryBuilder<Avatar> {
   async get(): Promise<Record<string, Avatar>> {
     const avatars = await this.list();
 
-    return Object.fromEntries(avatars.map((avatar) => [avatar.id, avatar]));
+    return Object.fromEntries(avatars.map((a) => [a.id, a]));
   }
 
   async list(): Promise<Avatar[]> {
     let avatars = await super.list();
 
     if (this.options.withImages) {
-      avatars = await Promise.all(avatars.map((avatar) => super.injectImagePaths(avatar)));
+      avatars = await super.injectImagePaths(avatars);
     }
 
     return avatars;
   }
 
   async getByID(id: string | number): Promise<Avatar> {
-    let avatar = await super.getByID(id);
+    const avatar = await super.getByID(id);
+    let avatars = [avatar];
 
     if (this.options.withImages) {
-      avatar = await super.injectImagePaths(avatar);
+      avatars = await super.injectImagePaths(avatars);
     }
 
-    return avatar;
+    return avatars[0];
   }
 
   async getByName(name: string): Promise<Avatar | undefined> {
-    const avatars = await this.list();
-    let avatar = avatars.find((avatar) => avatar.name === name);
+    const allAvatars = await super.list();
+    const avatar = allAvatars.find((a) => a.name === name);
 
     if (!avatar) {
-      return avatar;
+      return;
     }
+
+    let avatars = [avatar];
 
     if (this.options.withImages) {
-      avatar = await super.injectImagePaths(avatar);
+      avatars = await super.injectImagePaths(avatars);
     }
 
-    return avatar;
+    return avatars[0];
   }
 
   withImages(): AvatarQuery {
@@ -61,9 +64,9 @@ export class AvatarQuery extends QueryBuilder<Avatar> {
   withOptions(options: QueryOptions): AvatarQuery {
     this.options = { ...this.options, ...options };
 
-    Object.keys(options).forEach((optionKey) => {
-      if (options[optionKey]) {
-        switch (optionKey) {
+    Object.keys(options).forEach((key) => {
+      if (options[key]) {
+        switch (key) {
           case 'withImages':
             this.withImages();
             break;

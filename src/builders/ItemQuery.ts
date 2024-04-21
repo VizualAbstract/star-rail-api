@@ -14,40 +14,33 @@ export class ItemQuery extends QueryBuilder<Item> {
   async get(): Promise<Record<string, Item>> {
     const items = await this.list();
 
-    return Object.fromEntries(items.map((item) => [item.id, item]));
+    return Object.fromEntries(items.map((i) => [i.id, i]));
   }
 
   async list(): Promise<Item[]> {
     let items = await super.list();
 
     if (this.options.withImages) {
-      items = await Promise.all(items.map((item) => super.injectImagePaths(item)));
+      items = await super.injectImagePaths(items);
     }
 
     return items;
   }
 
   async getByID(id: string | number): Promise<Item> {
-    let item = await super.getByID(id);
+    const item = await super.getByID(id);
+    let items = [item];
 
     if (this.options.withImages) {
-      item = await super.injectImagePaths(item);
+      items = await super.injectImagePaths(items);
     }
 
-    return item;
+    return items[0];
   }
 
   async getByName(name: string): Promise<Item | undefined> {
-    const items = await super.list();
-    let item = items.find((item) => item.name === name);
-
-    if (!item) {
-      return item;
-    }
-
-    if (this.options.withImages) {
-      item = await super.injectImagePaths(item);
-    }
+    const items = await this.list();
+    const item = items.find((i) => i.name === name);
 
     return item;
   }
@@ -61,9 +54,9 @@ export class ItemQuery extends QueryBuilder<Item> {
   withOptions(options: QueryOptions): ItemQuery {
     this.options = { ...this.options, ...options };
 
-    Object.keys(options).forEach((optionKey) => {
-      if (options[optionKey]) {
-        switch (optionKey) {
+    Object.keys(options).forEach((key) => {
+      if (options[key]) {
+        switch (key) {
           case 'withImages':
             this.withImages();
             break;

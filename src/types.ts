@@ -141,7 +141,7 @@ export interface Character {
   _ranks?: CharacterRank[];
   _skills?: CharacterSkill[];
   _skill_trees?: CharacterSkillTree[];
-  _characterPromotions?: CharacterPromotion;
+  _promotions?: CharacterPromotion;
 }
 
 // Description
