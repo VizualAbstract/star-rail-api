@@ -7,8 +7,6 @@ export class AvatarQuery extends QueryBuilder<Avatar> {
 
   constructor(config?: Config) {
     super({ ...config, resource: Resources.avatars });
-
-    this.config = { ...config, resource: Resources.avatars };
   }
 
   withImages(): AvatarQuery {

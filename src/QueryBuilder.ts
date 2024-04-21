@@ -12,6 +12,10 @@ export type Config = {
   resource?: Resources;
 };
 
+export type QueryOptions = {
+  [key: string]: boolean;
+};
+
 /**
  * Base class for all builders.
  * @template T - Type of the data to be fetched.
@@ -44,26 +48,20 @@ export type Config = {
  *
  */
 abstract class QueryBuilder<T> {
-  protected config: Config;
-  protected baseUrl: string;
-  protected assetUrl: string;
-  protected resource?: Resources;
-  protected language: Languages;
+  protected config: Config = {
+    baseUrl: BASE_URL,
+    assetUrl: ASSET_URL,
+    language: Languages.english,
+    resource: undefined,
+  };
 
   protected queryBuilder: AxiosCacheInstance;
+  protected options: QueryOptions = {};
 
   constructor(config?: Config) {
-    const { baseUrl, assetUrl, language, resource } = config || {};
-    this.baseUrl = baseUrl || BASE_URL;
-    this.assetUrl = assetUrl || ASSET_URL;
-    this.language = language || Languages.english;
-    this.resource = resource;
-    this.config = config || {};
-
     const axiosClient = Axios.create({
-      baseURL: this.baseUrl,
+      baseURL: this.config.baseUrl,
     });
-
     this.queryBuilder = setupCache(axiosClient, {
       ttl: 1000 * 60 * 6,
       cacheTakeover: false,
@@ -73,10 +71,10 @@ abstract class QueryBuilder<T> {
   }
 
   protected async fetchData(): Promise<AxiosResponse<Record<string, T>>> {
-    if (!this.resource) {
+    if (!this.config.resource) {
       throw new Error('Resource not defined.');
     }
-    const fetchURL = `${this.baseUrl}/${this.language}/${this.resource}.json`;
+    const fetchURL = `${this.config.baseUrl}/${this.config.language}/${this.config.resource}.json`;
     return this.queryBuilder.get<Record<string, T>>(fetchURL);
   }
 
@@ -94,7 +92,7 @@ abstract class QueryBuilder<T> {
     const data = await this.fetchData();
     const item = data.data[`${id}`];
     if (!item) {
-      throw new Error(`${this.resource} with ID '${id}' not found.`);
+      throw new Error(`${this.config.resource} with ID '${id}' not found.`);
     }
     return item;
   }
