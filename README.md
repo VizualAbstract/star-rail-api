@@ -2,24 +2,24 @@
 
 [Star Rail API](https://github.com/VizualAbstract/star-rail-api) provides a query builder specifically tailored to use with [StarRailStaticAPI](https://github.com/vizualabstract/StarRailStaticAPI), providing a variety of methods to join and enrich the data.
 
-## Clients
+## Query Builders
 
-### CharactersClient
+### CharacterQuery
 
-The character client is used to fetch data from [characters.json](https://vizualabstract.github.io/StarRailStaticAPI/db/en/characters.json).
+The Character Query is used to fetch data from [characters.json](https://vizualabstract.github.io/StarRailStaticAPI/db/en/characters.json).
 
 ```javascript
-import { CharactersClient } from 'star-rail-api';
+import { CharacterQuery } from 'star-rail-api';
 ```
 
-## Client configuration
+## Class configuration
 
-The client will accept an optional configuration object that you can use to overwrite default values.
+The builder will accept an optional configuration object that you can use to overwrite default values.
 
 **Example**
 
 ```
-const client = CharactersClient({
+const query = CharacterQuery({
   baseURL: '',
   assetURL: '',
   language: 'en',
@@ -52,9 +52,9 @@ const client = CharactersClient({
 **Example**
 
 ```javascript
-import { CharacterIDs, CharactersClient } from 'star-rail-api';
+import { CharacterIDs, CharacterQuery } from 'star-rail-api';
 
-const characters = new CharactersClient();
+const characters = new CharacterQuery();
 
 characters
   .withRanks()
@@ -71,11 +71,11 @@ characters
 ```
 
 
-## Using Clients
+## Using Builders
 
-The ensuing illustrations will address the various kinds of functionalities available within the `CharactersClient` class. This client facilitates interaction with [characters.json](https://vizualabstract.github.io/StarRailStaticAPI/db/en/characters.json).
+The ensuing illustrations will address the various kinds of functionalities available within the `CharacterQuery` class. This builder facilitates interaction with [characters.json](https://vizualabstract.github.io/StarRailStaticAPI/db/en/characters.json).
 
-Every client will comprise either methods designed for adjusting the query (modifying) or for retrieving the data.
+Every builder will comprise either methods designed for adjusting the query (modifying) or for retrieving the data.
 
 Hence, we will classify them as either **Modifiers** or **Retrievers**.
 
@@ -83,7 +83,7 @@ Hence, we will classify them as either **Modifiers** or **Retrievers**.
 
 Retrievers are functions that offer a means to perform a retrieval operation. They will reply with the requested information, but the output format could vary based on the specific retriever used, such as a dictionary, an object, a list, or an error message.
 
-Although every client will support standard `get` and `list` retriever functionalities, certain clients like the `CharactersClient` may have additional specialized methods for accessing data by ID or Name.
+Although every builder will support standard `get` and `list` retriever functionalities, certain builders like the `CharacterQuery` may have additional specialized methods for accessing data by ID or Name.
 
 **get()**
 
@@ -92,11 +92,11 @@ The `get()` method allows direct access to the raw JSON object by returning a di
 **Example**
 
 ```javascript
-import { CharactersClient } from 'star-rail-api';
+import { CharacterQuery } from 'star-rail-api';
 
-const client = new CharactersClient();
+const query = new CharacterQuery();
 
-characters.get().then((resp) => { console.log(resp) });
+query.get().then((resp) => { console.log(resp) });
 
 // Response
 {
@@ -168,16 +168,16 @@ On the other hand, the `list()` method will return the values as an array.
 
 **getByName(string)**
 
-The `CharactersClient` has a special method you wont find on all clients. Using `getByName`, you can can fetch specific characters by their name property.
+The `CharacterQuery` has a special method you wont find on all builders. Using `getByName`, you can can fetch specific characters by their name property.
 
 **Example**
 
 ```javascript
-import { CharactersClient } from 'star-rail-api';
+import { CharacterQuery } from 'star-rail-api';
 
-const client = new CharactersClient();
+const query = new CharacterQuery();
 
-characters
+query
   .getByName('Himeko')
   .then((resp) => { console.log(resp) });
 
@@ -203,16 +203,16 @@ Modifiers are chainable methods that provide users with a way of manipulating da
 
 In the example above, you can see that ranks returns a list of IDs. These are references to entries in the [character_ranks.json](https://vizualabstract.github.io/StarRailStaticAPI/db/en/character_ranks.json) file.
 
-While you can invoke the `CharacterRanksClient` class to retrieve that information, you can use modifiers on the `CharactersClient` to automatically retrieve and include that data when you invoke your exectuer method.
+While you can invoke the `CharacterRanksClient` class to retrieve that information, you can use modifiers on the `CharacterQuery` to automatically retrieve and include that data when you invoke your exectuer method.
 
 Keep in mind, most modifiers that retrieve additional property data will will append its responseto the data object, not replace the original property value:
 
 **withRanks**
 
 ```javascript
-import { CharactersClient, CharactersByID } from 'star-rail-api';
+import { CharacterQuery, CharactersByID } from 'star-rail-api';
 
-new CharactersClient()
+new CharacterQuery()
   .withRanks()
   .getByName(CharactersByID.SilverWolf)
   .then((resp) => {
@@ -269,12 +269,12 @@ new CharactersClient()
 
 One exception to the modifiers mentioned above is the `withImages()` method, which instead of appending images to the object, will actually inject a full URL path to the value.
 
-[StarRailStaticAPI](https://vizualabstract.github.io/StarRailStaticAPI/) also has access to images, and therefore, so do Star Rail API clients. Others, the default behavior is to return images with only the file path.
+[StarRailStaticAPI](https://vizualabstract.github.io/StarRailStaticAPI/) also has access to images, and therefore, so do Star Rail API builders. Others, the default behavior is to return images with only the file path.
 
 ```javascript
-import { CharactersClient, CharactersByID } from 'star-rail-api';
+import { CharacterQuery, CharactersByID } from 'star-rail-api';
 
-new CharactersClient()
+new CharacterQuery()
   .withRanks()
   .withImages()
   .getByName(CharactersByID.SilverWolf)
@@ -322,16 +322,16 @@ new CharactersClient()
 
 ## Languages
 
-The Query Client offers a variety of options, but the most important one may be the language setting. By default, the Query client will return english translations.
+The Query Client offers a variety of options, but the most important one may be the language setting. By default, the Query builder will return english translations.
 
 To understand how languages work with the StarRailStaticAPI, see [the Language section](https://vizualabstract.github.io/StarRailStaticAPI/#language).
 
-To configure the client to use a different language translation, provide an options object to your client class:
+To configure the query to use a different language translation, provide an options object to your query class:
 
 ```javascript
-import { CharactersClient, CharactersByID, Languages } from 'star-rail-api';
+import { CharacterQuery, CharactersByID, Languages } from 'star-rail-api';
 
-new CharactersClient({
+new CharacterQuery({
     language: Languages.chinese // or use 'cn'
   })
   .withRanks()
@@ -386,13 +386,13 @@ Keep in mind, `getByName` uses the English translation - so if you're using a di
 **Characters enum**
 
 ```javascript
-import { CharactersClient, Characters } from 'star-rail-api';
+import { CharacterQuery, Characters } from 'star-rail-api';
 
 // English with Characters enum
-const weltEn = new CharactersClient().getByName(Characters.Welt);
+const weltEn = new CharacterQuery().getByName(Characters.Welt);
 
 // Chinese
-const weltCN = new CharactersClient().getByName('瓦尔特');
+const weltCN = new CharacterQuery().getByName('瓦尔特');
 ```
 
 While this is something I may support in the future, for now, I recommend using `getByID` and `CharactersByID` if you intend on support other languages. They are language agnostic:
@@ -400,19 +400,19 @@ While this is something I may support in the future, for now, I recommend using 
 **CharactersByID enum**
 
 ```javascript
-import { CharactersClient, CharactersByID } from 'star-rail-api';
+import { CharacterQuery, CharactersByID } from 'star-rail-api';
 
-const kafka = new CharactersClient().getByID(CharactersByID.Kafka);
+const kafka = new CharacterQuery().getByID(CharactersByID.Kafka);
 ```
 
 **Languages enum**
 
 ```javascript
-import { CharactersClient, Languages } from 'star-rail-api';
+import { CharacterQuery, Languages } from 'star-rail-api';
 
-const japaneseClient = new CharactersClient({ language: Languages.japanese });
+const japaneseClient = new CharacterQuery({ language: Languages.japanese });
 
-const portugueseClient = new CharactersClient({ language: 'pt' });
+const portugueseClient = new CharacterQuery({ language: 'pt' });
 ```
 
 In addition to characters, I have an enumerated list for language translations, but you can always use the key found at [vizualabstract.github.io/StarRailStaticAPI#languag](https://vizualabstract.github.io/StarRailStaticAPI#languag).
