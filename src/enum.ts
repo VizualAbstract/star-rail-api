@@ -127,7 +127,7 @@ export enum Resources {
   relics = 'relics',
   simulatedBlessings = 'simulated_blessings',
   simulatedBlocks = 'simulated_blocks',
-  simulatedCurious = 'simulated_curious',
+  simulatedCurios = 'simulated_curios',
   simulatedEvents = 'simulated_events',
 }
 
