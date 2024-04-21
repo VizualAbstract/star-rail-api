@@ -37,7 +37,7 @@ export class CharacterRankQuery extends QueryBuilder<CharacterRank> {
     }
 
     if (this.options.withImages) {
-      items = await super.injectImagePaths(items);
+      items = await super.populateImages(items);
     }
 
     return items;
@@ -56,7 +56,7 @@ export class CharacterRankQuery extends QueryBuilder<CharacterRank> {
     }
 
     if (this.options.withImages) {
-      characterRanks = await super.injectImagePaths(characterRanks);
+      characterRanks = await super.populateImages(characterRanks);
     }
 
     return characterRanks[0];
@@ -138,17 +138,15 @@ export class CharacterRankQuery extends QueryBuilder<CharacterRank> {
     return characterRanks;
   }
 
-  private async populateLevelUpSkills(characterRanks: CharacterRank[]): Promise<CharacterRank[]> {
+  private async populateLevelUpSkills(items: CharacterRank[]): Promise<CharacterRank[]> {
     if (this.skillQuery) {
       const skills = await this.skillQuery.get();
 
-      characterRanks.forEach((characterRank) => {
-        characterRank._level_up_skills = Object.values(characterRank.level_up_skills).map(
-          (s) => skills[s.id],
-        );
+      items.forEach((i) => {
+        i._level_up_skills = Object.values(i.level_up_skills).map((s) => skills[s.id]);
       });
     }
 
-    return characterRanks;
+    return items;
   }
 }

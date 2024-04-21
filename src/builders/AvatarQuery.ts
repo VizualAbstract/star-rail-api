@@ -21,7 +21,7 @@ export class AvatarQuery extends QueryBuilder<Avatar> {
     let avatars = await super.list();
 
     if (this.options.withImages) {
-      avatars = await super.injectImagePaths(avatars);
+      avatars = await super.populateImages(avatars);
     }
 
     return avatars;
@@ -32,7 +32,7 @@ export class AvatarQuery extends QueryBuilder<Avatar> {
     let avatars = [avatar];
 
     if (this.options.withImages) {
-      avatars = await super.injectImagePaths(avatars);
+      avatars = await super.populateImages(avatars);
     }
 
     return avatars[0];
@@ -49,7 +49,7 @@ export class AvatarQuery extends QueryBuilder<Avatar> {
     let avatars = [avatar];
 
     if (this.options.withImages) {
-      avatars = await super.injectImagePaths(avatars);
+      avatars = await super.populateImages(avatars);
     }
 
     return avatars[0];

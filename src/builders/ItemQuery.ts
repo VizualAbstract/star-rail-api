@@ -21,7 +21,7 @@ export class ItemQuery extends QueryBuilder<Item> {
     let items = await super.list();
 
     if (this.options.withImages) {
-      items = await super.injectImagePaths(items);
+      items = await super.populateImages(items);
     }
 
     return items;
@@ -32,7 +32,7 @@ export class ItemQuery extends QueryBuilder<Item> {
     let items = [item];
 
     if (this.options.withImages) {
-      items = await super.injectImagePaths(items);
+      items = await super.populateImages(items);
     }
 
     return items[0];

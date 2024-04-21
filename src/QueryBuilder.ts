@@ -102,7 +102,7 @@ abstract class QueryBuilder<T> {
     return item;
   }
 
-  async injectImagePaths(obj: T[]): Promise<T[]> {
+  async populateImages(obj: T[]): Promise<T[]> {
     utils.updateImagePaths(obj, this.config?.assetUrl);
     return obj;
   }

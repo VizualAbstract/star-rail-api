@@ -88,7 +88,7 @@ export class CharacterQuery extends QueryBuilder<Character> {
     }
 
     if (this.options.withImages) {
-      characters = await super.injectImagePaths(characters);
+      characters = await super.populateImages(characters);
     }
 
     return characters;
@@ -115,7 +115,7 @@ export class CharacterQuery extends QueryBuilder<Character> {
     }
 
     if (this.options.withImages) {
-      characters = await super.injectImagePaths(characters);
+      characters = await super.populateImages(characters);
     }
 
     return characters[0];
@@ -148,7 +148,7 @@ export class CharacterQuery extends QueryBuilder<Character> {
     }
 
     if (this.options.withImages) {
-      characters = await super.injectImagePaths(characters);
+      characters = await super.populateImages(characters);
     }
 
     return characters[0];
@@ -275,7 +275,7 @@ export class CharacterQuery extends QueryBuilder<Character> {
     return this.promotionQuery;
   }
 
-  private async populateRanks(characters: Character[]): Promise<Character[]> {
+  private async populateRanks(items: Character[]): Promise<Character[]> {
     if (this.rankQuery) {
       if (this.options.withRankMaterials) {
         this.rankQuery.withMaterials();
@@ -284,45 +284,45 @@ export class CharacterQuery extends QueryBuilder<Character> {
         this.rankQuery.withLevelUpSkills();
       }
       const ranks = await this.rankQuery.get();
-      characters.map((c) => (c._ranks = c.ranks.map((id) => ranks[id])));
+      items.map((c) => (c._ranks = c.ranks.map((id) => ranks[id])));
     }
 
-    return characters;
+    return items;
   }
 
-  private async populateSkills(characters: Character[]): Promise<Character[]> {
+  private async populateSkills(items: Character[]): Promise<Character[]> {
     if (this.skillQuery) {
       const skills = await this.skillQuery.get();
-      characters.forEach((c) => {
+      items.forEach((c) => {
         c._skills = c.skills.map((id) => skills[id]);
       });
     }
 
-    return characters;
+    return items;
   }
 
-  private async populateSkillTrees(characters: Character[]): Promise<Character[]> {
+  private async populateSkillTrees(items: Character[]): Promise<Character[]> {
     if (this.skillTreeQuery) {
       const skillTrees = await this.skillTreeQuery.get();
-      characters.forEach((c) => {
+      items.forEach((c) => {
         c._skill_trees = c.skill_trees.map((id) => skillTrees[id]);
       });
     }
 
-    return characters;
+    return items;
   }
 
-  private async populatePromotions(characters: Character[]): Promise<Character[]> {
+  private async populatePromotions(items: Character[]): Promise<Character[]> {
     if (this.promotionQuery) {
       if (this.options.withPromotionMaterials) {
         this.promotionQuery.withMaterials();
       }
       const promotions = await this.promotionQuery.get();
-      characters.forEach((c) => {
+      items.forEach((c) => {
         c._promotions = promotions[c.id];
       });
     }
 
-    return characters;
+    return items;
   }
 }

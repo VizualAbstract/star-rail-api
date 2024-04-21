@@ -55,28 +55,6 @@ export class CharacterPromotionQuery extends QueryBuilder<CharacterPromotion> {
     return this;
   }
 
-  private getItemQuery(): ItemQuery {
-    if (!this.itemQuery) {
-      this.itemQuery = new ItemQuery(this.config);
-    }
-
-    return this.itemQuery;
-  }
-
-  private async populateMaterials(
-    characterPromotions: CharacterPromotion[],
-  ): Promise<CharacterPromotion[]> {
-    if (this.itemQuery) {
-      const items = await this.itemQuery.get();
-
-      characterPromotions.forEach((c) => {
-        c._materials = c.materials.map((materials) => materials.map((i) => items[i.id]));
-      });
-    }
-
-    return characterPromotions;
-  }
-
   withOptions(options: QueryOptions): CharacterPromotionQuery {
     this.options = { ...this.options, ...options };
 
@@ -91,5 +69,25 @@ export class CharacterPromotionQuery extends QueryBuilder<CharacterPromotion> {
     });
 
     return this;
+  }
+
+  private getItemQuery(): ItemQuery {
+    if (!this.itemQuery) {
+      this.itemQuery = new ItemQuery(this.config);
+    }
+
+    return this.itemQuery;
+  }
+
+  private async populateMaterials(items: CharacterPromotion[]): Promise<CharacterPromotion[]> {
+    if (this.itemQuery) {
+      const _items = await this.itemQuery.get();
+
+      items.forEach((c) => {
+        c._materials = c.materials.map((materials) => materials.map((i) => _items[i.id]));
+      });
+    }
+
+    return items;
   }
 }
