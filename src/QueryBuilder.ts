@@ -66,7 +66,7 @@ abstract class QueryBuilder<T> {
     });
 
     this.queryBuilder = setupCache(axiosClient, {
-      ttl: 1000 * 60 * 6,
+      ttl: 1000 * 60 * 6 * 24 * 7,
       cacheTakeover: false,
       storage: buildWebStorage(localStorage, 'HSR-Query_'),
       ...(config?.cache || {}),
@@ -78,7 +78,9 @@ abstract class QueryBuilder<T> {
       throw new Error('Resource not defined.');
     }
     const fetchURL = `${this.config.baseUrl}/${this.config.language}/${this.config.resource}.json`;
-    return this.queryBuilder.get<Record<string, T>>(fetchURL);
+    return this.queryBuilder.get<Record<string, T>>(fetchURL, {
+      id: 'HSR-Query',
+    });
   }
 
   async get(): Promise<Record<string, T>> {
@@ -103,6 +105,10 @@ abstract class QueryBuilder<T> {
   async injectImagePaths(obj: T[]): Promise<T[]> {
     utils.updateImagePaths(obj, this.config?.assetUrl);
     return obj;
+  }
+
+  async resetCache(): Promise<void> {
+    await this.queryBuilder.storage.remove('HSR-Query');
   }
 }
 
