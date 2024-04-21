@@ -1,6 +1,6 @@
 {
   "name": "star-rail-api",
-  "version": "1.1.0",
+  "version": "2.0.0",
   "description": "A Fluent-style API Client created to work exclusively with StarRailStaticAPI",
   "author": "Corey M. Capetillo <corey.capetillo@gmail.com> (https://coreycapetillo.com)",
   "homepage": "https://github.com/VizualAbstract/star-rail-api",
