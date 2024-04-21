@@ -7,7 +7,7 @@ import { Character } from '@/types';
 import { CharacterPromotionQuery } from '@/builders/CharacterPromotionQuery';
 
 /**
- * Query for fetching characters from the StarRailResStaticAPI.
+ * Query for fetching characters from the StarRailStaticAPI.
  *
  * @class CharacterQuery
  * @extends QueryBuilder
@@ -28,10 +28,12 @@ import { CharacterPromotionQuery } from '@/builders/CharacterPromotionQuery';
  *
  * Modifier methods
  * @method withRanks - Include ranks in the response.
+ * @method withRankMaterials - Include materials in the character rank response
+ * @method withRankLevelUpSkills - Include level up skills in the character rank response.
  * @method withSkills - Include skills in the response.
  * @method withSkillTrees - Include skill trees in the response.
  * @method withPromotions - Include promotions in the response.
- * @method withMaterials - Include materials in the promotions response.
+ * @method withPromotionMaterials - Include materials in the promotions response.
  * @method withImages - Include full image paths in the response.
  *
  * Retrieval methods
@@ -47,10 +49,12 @@ export class CharacterQuery extends QueryBuilder<Character> {
 
   protected options: QueryOptions = {
     withRanks: false,
+    withRankMaterials: false,
+    withRankLevelUpSkills: false,
     withSkills: false,
     withSkillTrees: false,
     withPromotions: false,
-    withMaterials: false,
+    withPromotionMaterials: false,
     withImages: false,
   };
 
@@ -68,7 +72,7 @@ export class CharacterQuery extends QueryBuilder<Character> {
     let characters = await super.list();
 
     if (this.options.withRanks) {
-      characters = await Promise.all(characters.map((char) => this.populateRanks(char)));
+      characters = await this.populateRanks(characters); // await Promise.all(characters.map((char) => this.populateRanks(char)));
     }
 
     if (this.options.withSkills) {
@@ -80,9 +84,7 @@ export class CharacterQuery extends QueryBuilder<Character> {
     }
 
     if (this.options.withPromotions) {
-      characters = await Promise.all(
-        characters.map((char) => this.populateCharacterPromotions(char)),
-      );
+      characters = await this.populateCharacterPromotions(characters);
     }
 
     if (this.options.withImages) {
@@ -96,7 +98,8 @@ export class CharacterQuery extends QueryBuilder<Character> {
     let character = await super.getByID(id);
 
     if (this.options.withRanks) {
-      character = await this.populateRanks(character);
+      const characters = await this.populateRanks([character]);
+      character = characters[0];
     }
 
     if (this.options.withSkills) {
@@ -108,7 +111,8 @@ export class CharacterQuery extends QueryBuilder<Character> {
     }
 
     if (this.options.withPromotions) {
-      character = await this.populateCharacterPromotions(character);
+      const characters = await this.populateCharacterPromotions([character]);
+      character = characters[0];
     }
 
     if (this.options.withImages) {
@@ -136,6 +140,18 @@ export class CharacterQuery extends QueryBuilder<Character> {
     return this;
   }
 
+  withRankMaterials(): CharacterQuery {
+    this.options.withRankMaterials = true;
+
+    return this;
+  }
+
+  withRankLevelUpSkills(): CharacterQuery {
+    this.options.withRankLevelUpSkills = true;
+
+    return this;
+  }
+
   withSkills(): CharacterQuery {
     this.options.withSkills = true;
     this.getSkillQuery();
@@ -157,11 +173,8 @@ export class CharacterQuery extends QueryBuilder<Character> {
     return this;
   }
 
-  withMaterials(): CharacterQuery {
-    if (this.options.CharacterQuery) {
-      this.options.withMaterials = true;
-      this.addMaterialsToCharacterPromotions();
-    }
+  withPromotionMaterials(): CharacterQuery {
+    this.options.withPromotionMaterials = true;
 
     return this;
   }
@@ -181,6 +194,12 @@ export class CharacterQuery extends QueryBuilder<Character> {
           case 'withRanks':
             this.withRanks();
             break;
+          case 'withRankMaterials':
+            this.withRankMaterials();
+            break;
+          case 'withRankLevelUpSkills':
+            this.withRankLevelUpSkills();
+            break;
           case 'withSkills':
             this.withSkills();
             break;
@@ -190,8 +209,8 @@ export class CharacterQuery extends QueryBuilder<Character> {
           case 'withPromotions':
             this.withPromotions();
             break;
-          case 'withMaterials':
-            this.withMaterials();
+          case 'withPromotionMaterials':
+            this.withPromotionMaterials();
             break;
           case 'withImages':
             this.withImages();
@@ -235,23 +254,24 @@ export class CharacterQuery extends QueryBuilder<Character> {
     return this.characterPromotionQuery;
   }
 
-  private addMaterialsToCharacterPromotions() {
-    if (this.characterPromotionQuery && this.options.fetchMaterials) {
-      this.characterPromotionQuery.withMaterials();
+  private async populateRanks(characters: Character[]): Promise<Character[]> {
+    if (this.rankQuery) {
+      const ranksQuery = this.rankQuery;
+      if (this.options.withRankMaterials) {
+        ranksQuery.withMaterials();
+      }
+      if (this.options.withRankLevelUpSkills) {
+        ranksQuery.withLevelUpSkills();
+      }
+      const ranks = await ranksQuery.get();
+      characters.map((c) => (c._ranks = c.ranks.map((rankId) => ranks[rankId])));
     }
-  }
 
-  private async populateRanks(character: Character): Promise<Character> {
-    if (this.rankQuery && character.ranks && character.ranks.length > 0) {
-      const ranks = await this.rankQuery.get();
-      character._ranks = character.ranks.map((rankId) => ranks[rankId]);
-    }
-
-    return character;
+    return characters;
   }
 
   private async populateSkills(character: Character): Promise<Character> {
-    if (this.skillQuery && character.skills && character.skills.length > 0) {
+    if (this.skillQuery && character.skills) {
       const skills = await this.skillQuery.get();
       character._skills = character.skills.map((skillId) => skills[skillId]);
     }
@@ -260,7 +280,7 @@ export class CharacterQuery extends QueryBuilder<Character> {
   }
 
   private async populateSkillTrees(character: Character): Promise<Character> {
-    if (this.skillTreeQuery && character.skill_trees && character.skill_trees.length > 0) {
+    if (this.skillTreeQuery && character.skill_trees) {
       const skillTrees = await this.skillTreeQuery.get();
       character._skill_trees = character.skill_trees.map((skillTreeId) => skillTrees[skillTreeId]);
     }
@@ -268,12 +288,16 @@ export class CharacterQuery extends QueryBuilder<Character> {
     return character;
   }
 
-  private async populateCharacterPromotions(character: Character): Promise<Character> {
+  private async populateCharacterPromotions(characters: Character[]): Promise<Character[]> {
     if (this.characterPromotionQuery) {
-      const characterPromotions = await this.characterPromotionQuery.getByID(character.id);
-      character._characterPromotions = characterPromotions;
+      const characterPromotionQuery = this.characterPromotionQuery;
+      if (this.options.withPromotionMaterials) {
+        characterPromotionQuery.withMaterials();
+      }
+      const characterPromotions = await characterPromotionQuery.get();
+      characters.map((c) => ({ ...c, _characterPromotions: characterPromotions[c.id] }));
     }
 
-    return character;
+    return characters;
   }
 }

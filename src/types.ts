@@ -48,6 +48,9 @@ export interface CharacterRank {
   materials: CharacterRankMaterial[];
   level_up_skills: CharacterRankLevelUpSkill[];
   icon: string;
+
+  _materials?: Item[];
+  _level_up_skills: CharacterSkill[];
 }
 
 export interface CharacterRankMaterial {

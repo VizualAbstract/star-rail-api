@@ -1,5 +1,5 @@
 import QueryBuilder, { Config, QueryOptions } from '@/QueryBuilder';
-import { Characters, Resources } from '@/enum';
+import { Resources } from '@/enum';
 import { CharacterToIDs } from '@/utils';
 import { CharacterPromotion } from '@/types';
 import { ItemQuery } from '@/builders/ItemQuery';
@@ -41,7 +41,7 @@ export class CharacterPromotionQuery extends QueryBuilder<CharacterPromotion> {
     return characterPromotion;
   }
 
-  async getByCharacterName(character: Characters): Promise<CharacterPromotion> {
+  async getByCharacterName(character: string): Promise<CharacterPromotion> {
     const id = CharacterToIDs[character];
 
     return this.getByID(id);
@@ -65,11 +65,11 @@ export class CharacterPromotionQuery extends QueryBuilder<CharacterPromotion> {
   private async populateMaterials(
     characterPromotion: CharacterPromotion,
   ): Promise<CharacterPromotion> {
-    if (this.itemQuery && characterPromotion.materials && characterPromotion.materials.length > 0) {
+    if (this.itemQuery && characterPromotion.materials) {
       const items = await this.itemQuery.get();
 
-      characterPromotion._materials = characterPromotion.materials.map((promotion) =>
-        promotion.map((material) => items[material.id]),
+      characterPromotion._materials = characterPromotion.materials.map((materials) =>
+        materials.map((item) => items[item.id]),
       );
     }
 
@@ -82,7 +82,7 @@ export class CharacterPromotionQuery extends QueryBuilder<CharacterPromotion> {
     Object.keys(options).forEach((optionKey) => {
       if (options[optionKey]) {
         switch (optionKey) {
-          case 'withImages':
+          case 'withMaterials':
             this.withMaterials();
             break;
         }
