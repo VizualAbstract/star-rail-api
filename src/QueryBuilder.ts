@@ -107,7 +107,7 @@ abstract class QueryBuilder<T> {
     return obj;
   }
 
-  async resetCache(): Promise<void> {
+  async removeCache(): Promise<void> {
     await this.queryBuilder.storage.remove(this.config?.resource || '');
   }
 }
