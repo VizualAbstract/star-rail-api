@@ -118,7 +118,7 @@ export enum Resources {
   lightConePromotions = 'light_cone_promotions',
   lightConeRanks = 'light_cone_ranks',
   lightCones = 'light_cones',
-  nicknames = 'nicknames',
+  nicknames = 'nickname',
   paths = 'paths',
   properties = 'properties',
   relicMainAffixes = 'relic_main_affixes',

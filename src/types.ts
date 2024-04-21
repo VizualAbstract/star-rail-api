@@ -141,7 +141,7 @@ export interface Character {
   _ranks?: CharacterRank[];
   _skills?: CharacterSkill[];
   _skill_trees?: CharacterSkillTree[];
-  _characterPromotions?: CharacterPromotion;
+  _promotions?: CharacterPromotion;
 }
 
 // Description
@@ -212,6 +212,9 @@ export interface LightCone {
   icon: string;
   preview: string;
   portrait: string;
+
+  _promotions?: LightConePromotion;
+  _ranks?: LightConeRank;
 }
 
 // Nickname
@@ -291,6 +294,8 @@ export interface Relic {
   main_affix_id: string;
   sub_affix_id: string;
   icon: string;
+
+  _set?: RelicSet;
 }
 
 // Simulated Blessing

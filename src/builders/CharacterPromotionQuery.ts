@@ -16,33 +16,34 @@ export class CharacterPromotionQuery extends QueryBuilder<CharacterPromotion> {
   }
 
   async get(): Promise<Record<string, CharacterPromotion>> {
-    const characterPromotions = await this.list();
+    const promotions = await this.list();
 
-    return Object.fromEntries(characterPromotions.map((promotion) => [promotion.id, promotion]));
+    return Object.fromEntries(promotions.map((p) => [p.id, p]));
   }
 
   async list(): Promise<CharacterPromotion[]> {
     let items = await super.list();
 
     if (this.options.withMaterials) {
-      items = await Promise.all(items.map((item) => this.populateMaterials(item)));
+      items = await this.populateMaterials(items);
     }
 
     return items;
   }
 
   async getByID(id: string | number): Promise<CharacterPromotion> {
-    let characterPromotion = await super.getByID(id);
+    const promotion = await super.getByID(id);
+    let promotions = [promotion];
 
     if (this.options.withMaterials) {
-      characterPromotion = await this.populateMaterials(characterPromotion);
+      promotions = await this.populateMaterials(promotions);
     }
 
-    return characterPromotion;
+    return promotions[0];
   }
 
-  async getByCharacterName(character: string): Promise<CharacterPromotion> {
-    const id = CharacterToIDs[character];
+  async getByCharacterName(name: string): Promise<CharacterPromotion> {
+    const id = CharacterToIDs[name];
 
     return this.getByID(id);
   }
@@ -50,6 +51,22 @@ export class CharacterPromotionQuery extends QueryBuilder<CharacterPromotion> {
   withMaterials(): CharacterPromotionQuery {
     this.options.withMaterials = true;
     this.getItemQuery();
+
+    return this;
+  }
+
+  withOptions(options: QueryOptions): CharacterPromotionQuery {
+    this.options = { ...this.options, ...options };
+
+    Object.keys(options).forEach((key) => {
+      if (options[key]) {
+        switch (key) {
+          case 'withMaterials':
+            this.withMaterials();
+            break;
+        }
+      }
+    });
 
     return this;
   }
@@ -62,33 +79,15 @@ export class CharacterPromotionQuery extends QueryBuilder<CharacterPromotion> {
     return this.itemQuery;
   }
 
-  private async populateMaterials(
-    characterPromotion: CharacterPromotion,
-  ): Promise<CharacterPromotion> {
-    if (this.itemQuery && characterPromotion.materials) {
-      const items = await this.itemQuery.get();
+  private async populateMaterials(items: CharacterPromotion[]): Promise<CharacterPromotion[]> {
+    if (this.itemQuery) {
+      const _items = await this.itemQuery.get();
 
-      characterPromotion._materials = characterPromotion.materials.map((materials) =>
-        materials.map((item) => items[item.id]),
-      );
+      items.forEach((c) => {
+        c._materials = c.materials.map((materials) => materials.map((i) => _items[i.id]));
+      });
     }
 
-    return characterPromotion;
-  }
-
-  withOptions(options: QueryOptions): CharacterPromotionQuery {
-    this.options = { ...this.options, ...options };
-
-    Object.keys(options).forEach((optionKey) => {
-      if (options[optionKey]) {
-        switch (optionKey) {
-          case 'withMaterials':
-            this.withMaterials();
-            break;
-        }
-      }
-    });
-
-    return this;
+    return items;
   }
 }

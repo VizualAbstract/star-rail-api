@@ -22,43 +22,44 @@ export class CharacterRankQuery extends QueryBuilder<CharacterRank> {
   async get(): Promise<Record<string, CharacterRank>> {
     const characterRanks = await this.list();
 
-    return Object.fromEntries(characterRanks.map((promotion) => [promotion.id, promotion]));
+    return Object.fromEntries(characterRanks.map((p) => [p.id, p]));
   }
 
   async list(): Promise<CharacterRank[]> {
     let items = await super.list();
 
     if (this.options.withMaterials) {
-      items = await Promise.all(items.map((item) => this.populateMaterials(item)));
+      items = await this.populateMaterials(items);
     }
 
     if (this.options.withLevelUpSkills) {
-      items = await Promise.all(items.map((item) => this.populateLevelUpSkills(item)));
+      items = await this.populateLevelUpSkills(items);
     }
 
     if (this.options.withImages) {
-      items = await Promise.all(items.map((char) => super.injectImagePaths(char)));
+      items = await super.populateImages(items);
     }
 
     return items;
   }
 
   async getByID(id: string | number): Promise<CharacterRank> {
-    let characterRank = await super.getByID(id);
+    const characterRank = await super.getByID(id);
+    let characterRanks = [characterRank];
 
     if (this.options.withMaterials) {
-      characterRank = await this.populateMaterials(characterRank);
+      characterRanks = await this.populateMaterials(characterRanks);
     }
 
     if (this.options.withLevelUpSkills) {
-      characterRank = await this.populateLevelUpSkills(characterRank);
+      characterRanks = await this.populateLevelUpSkills(characterRanks);
     }
 
     if (this.options.withImages) {
-      characterRank = await super.injectImagePaths(characterRank);
+      characterRanks = await super.populateImages(characterRanks);
     }
 
-    return characterRank;
+    return characterRanks[0];
   }
 
   async getByCharacterName(character: string): Promise<CharacterRank> {
@@ -90,9 +91,9 @@ export class CharacterRankQuery extends QueryBuilder<CharacterRank> {
   withOptions(options: QueryOptions): CharacterRankQuery {
     this.options = { ...this.options, ...options };
 
-    Object.keys(options).forEach((optionKey) => {
-      if (options[optionKey]) {
-        switch (optionKey) {
+    Object.keys(options).forEach((key) => {
+      if (options[key]) {
+        switch (key) {
           case 'withMaterials':
             this.withMaterials();
             break;
@@ -125,24 +126,27 @@ export class CharacterRankQuery extends QueryBuilder<CharacterRank> {
     return this.skillQuery;
   }
 
-  private async populateMaterials(characterRank: CharacterRank): Promise<CharacterRank> {
-    if (this.itemQuery && characterRank.materials) {
+  private async populateMaterials(characterRanks: CharacterRank[]): Promise<CharacterRank[]> {
+    if (this.itemQuery) {
       const items = await this.itemQuery.get();
 
-      characterRank._materials = characterRank.materials.map((material) => items[material.id]);
+      characterRanks.forEach((c) => {
+        c._materials = c.materials.map((i) => items[i.id]);
+      });
     }
 
-    return characterRank;
+    return characterRanks;
   }
 
-  private async populateLevelUpSkills(characterRank: CharacterRank): Promise<CharacterRank> {
-    if (this.skillQuery && characterRank.level_up_skills) {
+  private async populateLevelUpSkills(items: CharacterRank[]): Promise<CharacterRank[]> {
+    if (this.skillQuery) {
       const skills = await this.skillQuery.get();
-      characterRank._level_up_skills = Object.values(characterRank.level_up_skills).map(
-        (skill) => skills[skill.id],
-      );
+
+      items.forEach((i) => {
+        i._level_up_skills = Object.values(i.level_up_skills).map((s) => skills[s.id]);
+      });
     }
 
-    return characterRank;
+    return items;
   }
 }

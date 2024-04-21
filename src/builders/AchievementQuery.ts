@@ -9,7 +9,7 @@ export class AchievementQuery extends QueryBuilder<Achievement> {
 
   async getByTitle(title: string): Promise<Achievement | undefined> {
     const achievements = await super.list();
-    const achievement = achievements.find((achievement) => achievement.title === title);
+    const achievement = achievements.find((a) => a.title === title);
 
     return achievement;
   }
