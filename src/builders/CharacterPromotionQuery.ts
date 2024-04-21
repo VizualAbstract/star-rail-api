@@ -42,8 +42,8 @@ export class CharacterPromotionQuery extends QueryBuilder<CharacterPromotion> {
     return promotions[0];
   }
 
-  async getByCharacterName(character: string): Promise<CharacterPromotion> {
-    const id = CharacterToIDs[character];
+  async getByCharacterName(name: string): Promise<CharacterPromotion> {
+    const id = CharacterToIDs[name];
 
     return this.getByID(id);
   }
