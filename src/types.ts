@@ -191,7 +191,7 @@ export interface LightConePromotionMaterial {
 // Light Cone Rank
 export interface LightConeRank {
   id: string;
-  rank: number;
+  skill: number;
   desc: string;
   params: number[][];
   properties: LightConeRankProperty[][];
