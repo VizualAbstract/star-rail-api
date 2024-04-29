@@ -1,5 +1,10 @@
 import Axios, { AxiosResponse } from 'axios';
-import { AxiosCacheInstance, buildWebStorage, setupCache } from 'axios-cache-interceptor';
+import {
+  AxiosCacheInstance,
+  buildWebStorage,
+  setupCache,
+  HeaderInterpreter,
+} from 'axios-cache-interceptor';
 import { ASSET_URL, BASE_URL } from '@/constants';
 import { Languages, Resources } from '@/enum';
 import utils from '@/utils';
@@ -10,11 +15,15 @@ export type Config = {
   cache?: AxiosCacheInstance;
   language?: Languages;
   resource?: Resources;
+  cacheTime?: number;
 };
 
 export type QueryOptions = {
   [key: string]: boolean;
 };
+
+const defaultCacheTime = 1000 * 60 * 24 * 3;
+const maxCacheTime = 1000 * 60 * 24 * 365;
 
 /**
  * Base class for all builders.
@@ -65,9 +74,18 @@ abstract class QueryBuilder<T> {
       baseURL: this.config.baseUrl,
     });
 
+    const customHeaderInterpreter: HeaderInterpreter = (headers) => {
+      if (headers?.['cache-control'] === 'no-cache') {
+        return { cache: 0 };
+      }
+      return {
+        cache: Math.min(config?.cacheTime || defaultCacheTime, maxCacheTime),
+      };
+    };
+
     this.queryBuilder = setupCache(axiosClient, {
-      ttl: 1000 * 60 * 6 * 24 * 3, // 3 days
       cacheTakeover: false,
+      headerInterpreter: customHeaderInterpreter,
       storage: buildWebStorage(localStorage, 'HSR-Query_'),
       ...(config?.cache || {}),
     });
