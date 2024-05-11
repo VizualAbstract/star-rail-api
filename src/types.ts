@@ -174,7 +174,7 @@ export interface Item {
 // Light Cone Promotions
 export interface LightConePromotion {
   id: string;
-  values: Record<Stats.hp | Stats.atk | Stats.def, LightConePromotionStat>;
+  values: Record<Stats.hp | Stats.atk | Stats.def, LightConePromotionStat>[];
   materials: LightConePromotionMaterial[][];
 }
 
