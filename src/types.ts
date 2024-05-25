@@ -23,7 +23,7 @@ export interface CharacterPromotion {
   values: Record<
     Stats.hp | Stats.atk | Stats.def | Stats.spd | Stats.crit | Stats.dodge | Stats.block,
     CharacterPromotionStat
-  >;
+  >[];
   materials: CharacterPromotionMaterial[][];
 
   _materials?: Item[][];
