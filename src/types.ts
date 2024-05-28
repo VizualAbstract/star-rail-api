@@ -262,7 +262,7 @@ export interface RelicMainAffixesAffix {
 export interface RelicSet {
   id: string;
   name: string;
-  desc: string;
+  desc: string[];
   properties: RelicSetProperty[][];
   icon: string;
   guide_overview: unknown[];
